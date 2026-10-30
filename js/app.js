@@ -47,15 +47,29 @@
   }
 
   // ::: whatsapp Contato
+  //   :foto https://url.jpg             (opcional — foto de perfil)
   //   < recebida | 14:32      <Fulano> recebida (grupo)      > enviada | 14:33      = Hoje
   function renderWhatsapp(title, lines) {
+    // extrai :foto se presente (deve ser a primeira linha de conteúdo)
+    var photoUrl = "";
+    var contentLines = [];
+    lines.forEach(function (line) {
+      var m = line.trim().match(/^:foto\s+(\S+)$/i);
+      if (m) { photoUrl = m[1]; }
+      else { contentLines.push(line); }
+    });
+
     var chat = el("div", { "class": "chat wa" });
     var head = el("div", { "class": "chat-head" });
-    head.appendChild(el("span", { "class": "avatar" }, (title || "?").charAt(0).toUpperCase()));
+    if (photoUrl) {
+      head.appendChild(el("img", { "class": "avatar wa-avatar-img", src: photoUrl, alt: title || "avatar", loading: "lazy" }));
+    } else {
+      head.appendChild(el("span", { "class": "avatar" }, (title || "?").charAt(0).toUpperCase()));
+    }
     head.appendChild(el("span", { "class": "chat-title" }, title || "Conversa"));
     chat.appendChild(head);
     var body = el("div", { "class": "chat-body" });
-    lines.forEach(function (line) {
+    contentLines.forEach(function (line) {
       line = line.trim();
       if (!line) return;
       var m;

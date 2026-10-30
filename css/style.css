@@ -246,6 +246,7 @@ body[data-theme="sepia"]  { --wa-bg:#1a1400; --wa-head:#2b2000; --wa-in:#221900;
 body[data-theme="dark"]   { --wa-bg:#0a0a14; --wa-head:#10101e; --wa-in:#14142a; --wa-out:#0a1a2a; --wa-text:#cccae0; --wa-chip:#08080f; }
 
 .wa { border-radius: 6px; overflow: hidden; border: 1px solid var(--border); background: var(--wa-bg); }
+.wa-avatar-img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex: none; }
 .chat-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--wa-head); color: var(--code); border-bottom: 1px solid var(--border); }
 .chat-title { font-weight: 700; font-family: var(--mono); font-size: .9rem; letter-spacing: .04em; }
 .chat-body { display: flex; flex-direction: column; gap: 4px; padding: 14px 12px; }
