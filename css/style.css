@@ -275,6 +275,7 @@ body[data-theme="dark"]   { --wa-bg:#0a0a14; --wa-head:#10101e; --wa-in:#14142a;
 .tw-img { display: block; width: 100%; height: auto; max-height: 320px; object-fit: cover; }
 .tw-meta { color: var(--muted); font-size: .82rem; margin-top: 10px; }
 .tw-divider { border: 0; border-top: 1px solid var(--border); margin: 10px 0 8px; }
+.tw-divider::before { content: none; }
 .tw-stats { color: var(--muted); font-size: .82rem; display: flex; flex-wrap: wrap; gap: 6px 16px; }
 .tw-stats strong { color: var(--text); }
 
