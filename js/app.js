@@ -129,7 +129,7 @@
       inline(p, block.replace(/\n/g, " "));
       if (commentsEnabled() && chapterId != null) {
         var btn = el("button", { type: "button", "class": "para-comment-btn", "aria-label": "Comentar este parágrafo", "data-idx": String(idx) });
-        btn.textContent = "💬";
+        btn.textContent = "¶";
         btn.addEventListener("click", function () { toggleParaPanel(wrap, chapterId, idx); });
         wrap.appendChild(btn);
       }

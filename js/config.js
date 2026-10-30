@@ -1,7 +1,7 @@
 // Configurações do site. Edite aqui.
 window.SITE_CONFIG = {
-  title: "Minha História",
-  subtitle: "Uma história em capítulos",
+  title: "ERROR 404",
+  subtitle: "",
 
   // Comentários via Supabase (passo a passo no README.md).
   // Enquanto url e anonKey estiverem vazios, a seção de comentários não aparece no site.
