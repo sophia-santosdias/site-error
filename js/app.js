@@ -114,18 +114,32 @@
     return card;
   }
 
-  function renderParagraphs(box, lines) {
+  var _paraCount = 0;
+
+  function resetParaCount() { _paraCount = 0; }
+
+  function renderParagraphs(box, lines, chapterId) {
     lines.join("\n").split(/\n{2,}/).forEach(function (block) {
       block = block.trim();
       if (!block) return;
       if (block === "---") { box.appendChild(el("hr")); return; }
+      var idx = _paraCount++;
+      var wrap = el("div", { "class": "para-wrap" });
       var p = el("p");
       inline(p, block.replace(/\n/g, " "));
-      box.appendChild(p);
+      if (commentsEnabled() && chapterId != null) {
+        var btn = el("button", { type: "button", "class": "para-comment-btn", "aria-label": "Comentar este parágrafo", "data-idx": String(idx) });
+        btn.textContent = "💬";
+        btn.addEventListener("click", function () { toggleParaPanel(wrap, chapterId, idx); });
+        wrap.appendChild(btn);
+      }
+      wrap.appendChild(p);
+      box.appendChild(wrap);
     });
   }
 
-  function renderText(raw) {
+  function renderText(raw, chapterId) {
+    resetParaCount();
     var box = el("div", { "class": "text" });
     var buf = [];
     var lines = raw.replace(/\r/g, "").split("\n");
@@ -134,13 +148,13 @@
       if (!m) { buf.push(lines[i]); continue; }
       var inner = [];
       for (i++; i < lines.length && lines[i].trim() !== ":::"; i++) inner.push(lines[i]);
-      renderParagraphs(box, buf); buf = [];
+      renderParagraphs(box, buf, chapterId); buf = [];
       var kind = m[1].toLowerCase(), title = m[2].trim();
       if (kind === "whatsapp") box.appendChild(renderWhatsapp(title, inner));
       else if (kind === "tweet" || kind === "twitter") box.appendChild(renderTweet(title, inner));
-      else renderParagraphs(box, inner);
+      else renderParagraphs(box, inner, chapterId);
     }
-    renderParagraphs(box, buf);
+    renderParagraphs(box, buf, chapterId);
     return box;
   }
 
@@ -192,31 +206,39 @@
     return li;
   }
 
-  function renderComments(chapter) {
-    if (!commentsEnabled()) return document.createDocumentFragment();
+  // ---------- comentários por parágrafo ----------
+  function toggleParaPanel(wrap, chapterId, paraIdx) {
+    var existing = wrap.querySelector(".para-panel");
+    if (existing) { existing.remove(); return; }
+    var panel = buildParaPanel(chapterId, paraIdx);
+    wrap.appendChild(panel);
+    panel.querySelector(".para-panel-name") && panel.querySelector(".para-panel-name").focus();
+  }
 
-    var wrap = el("section", { "class": "comments" });
-    wrap.appendChild(el("h2", null, "Comentários"));
-    var list = el("ul", { "class": "comment-list" });
-    var status = el("p", { "class": "notice" }, "Carregando comentários...");
-    wrap.appendChild(status);
-    wrap.appendChild(list);
+  function buildParaPanel(chapterId, paraIdx) {
+    var panel = el("div", { "class": "para-panel" });
+
+    var list = el("ul", { "class": "comment-list para-comment-list" });
+    var status = el("p", { "class": "notice" }, "Carregando...");
+    panel.appendChild(status);
+    panel.appendChild(list);
 
     api("comments?select=author,body,created_at&approved=eq.true&chapter_id=eq." +
-        encodeURIComponent(chapter.id) + "&order=created_at.asc&limit=200")
+        encodeURIComponent(chapterId) +
+        "&paragraph_index=eq." + paraIdx +
+        "&order=created_at.asc&limit=100")
       .then(function (r) { return r.json(); })
       .then(function (rows) {
-        status.textContent = rows.length ? "" : "Seja a primeira pessoa a comentar.";
+        status.textContent = rows.length ? "" : "Nenhum comentário ainda.";
         rows.forEach(function (row) { list.appendChild(commentItem(row)); });
       })
-      .catch(function () { status.textContent = "Não foi possível carregar os comentários."; });
+      .catch(function () { status.textContent = "Não foi possível carregar."; });
 
     var form = el("form", { "class": "comment-form", autocomplete: "off" });
-    var name = el("input", { type: "text", maxlength: "50", required: "required", placeholder: "Seu nome ou apelido", "aria-label": "Nome" });
-    var body = el("textarea", { maxlength: "2000", required: "required", rows: "4", placeholder: "Escreva seu comentário...", "aria-label": "Comentário" });
-    // campo isca contra robôs: pessoas não o veem nem preenchem
+    var name = el("input", { type: "text", maxlength: "50", required: "required", placeholder: "Seu nome ou apelido", "aria-label": "Nome", "class": "para-panel-name" });
+    var body = el("textarea", { maxlength: "2000", required: "required", rows: "3", placeholder: "Comente este trecho...", "aria-label": "Comentário" });
     var trap = el("input", { type: "text", name: "site", tabindex: "-1", autocomplete: "off", "aria-hidden": "true", "class": "trap" });
-    var btn = el("button", { type: "submit", "class": "btn primary" }, "Enviar comentário");
+    var btn = el("button", { type: "submit", "class": "btn primary" }, "Enviar");
     var msg = el("p", { "class": "notice", role: "status" });
     [name, body, trap, btn, msg].forEach(function (n) { form.appendChild(n); });
 
@@ -224,7 +246,7 @@
       e.preventDefault();
       if (trap.value) return;
       var last = parseInt(store("lastComment"), 10) || 0;
-      if (Date.now() - last < 30000) { msg.textContent = "Aguarde alguns segundos antes de enviar outro comentário."; return; }
+      if (Date.now() - last < 30000) { msg.textContent = "Aguarde alguns segundos."; return; }
       var author = name.value.trim(), text = body.value.trim();
       if (!author || !text) return;
       btn.disabled = true;
@@ -232,18 +254,22 @@
       api("comments", {
         method: "POST",
         headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
-        body: JSON.stringify({ chapter_id: chapter.id, author: author, body: text })
+        body: JSON.stringify({ chapter_id: chapterId, paragraph_index: paraIdx, author: author, body: text })
       }).then(function () {
         store("lastComment", String(Date.now()));
         body.value = "";
-        msg.textContent = "Obrigado! Seu comentário será exibido após a aprovação.";
+        msg.textContent = "Obrigado! Aparecerá após aprovação.";
       }).catch(function () {
-        msg.textContent = "Não foi possível enviar o comentário. Tente novamente mais tarde.";
+        msg.textContent = "Erro ao enviar. Tente novamente.";
       }).then(function () { btn.disabled = false; });
     });
 
-    wrap.appendChild(form);
-    return wrap;
+    panel.appendChild(form);
+    return panel;
+  }
+
+  function renderComments(chapter) {
+    return document.createDocumentFragment(); // comentários agora são por parágrafo
   }
 
   // ---------- páginas ----------
@@ -292,7 +318,7 @@
         var art = el("article", { "class": "chapter" });
         art.appendChild(el("h1", null, c.title));
         art.appendChild(el("div", { "class": "meta" }, "Capítulo " + (idx + 1) + " de " + chapters.length));
-        art.appendChild(renderText(raw));
+        art.appendChild(renderText(raw, c.id));
 
         var nav = el("nav", { "class": "nav" });
         nav.appendChild(navLink("← Anterior", chapters[idx - 1]));

@@ -123,7 +123,7 @@ a { color: var(--accent); }
 .chapter .meta::before { content: "// "; color: var(--muted); }
 .chapter .text { font-size: var(--fs); }
 .chapter .text p { margin: 0 0 1.15em; hyphens: auto; }
-.chapter .text p:first-child::first-letter {
+.chapter .text .para-wrap:first-child p::first-letter {
   float: left; font-size: 3.6em; line-height: .8; padding: 8px 10px 0 0; color: var(--accent); font-weight: 700;
 }
 /* separador de cena: ponto de foco */
@@ -132,21 +132,56 @@ a { color: var(--accent); }
 
 .nav { display: flex; justify-content: space-between; gap: 8px; margin: 44px 0; }
 
-/* ---------- comentários ---------- */
-.comments { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); font-family: system-ui, sans-serif; }
-.comments h2 { font-family: var(--mono); font-size: 1rem; }
-.comments h2::before { content: "// "; color: var(--muted); }
+/* ---------- comentários por parágrafo ---------- */
 .notice { color: var(--muted); font-size: .9rem; }
 
-.comment-list { list-style: none; padding: 0; margin: 0 0 24px; }
-.comment { padding: 12px 14px; border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 3px; background: var(--surface); margin-bottom: 8px; }
-.comment-head { display: flex; justify-content: space-between; gap: 8px; font-size: .9rem; }
-.comment-date { color: var(--muted); font-family: var(--mono); font-size: .8rem; }
-.comment p { margin: 6px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; }
-.comment-form { display: flex; flex-direction: column; gap: 8px; }
+/* wrapper de cada parágrafo: posiciona o botão 💬 à esquerda */
+.para-wrap {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 1.15em;
+}
+.para-wrap p { margin: 0; }
+
+.para-comment-btn {
+  position: absolute;
+  left: 0;
+  top: .2em;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: .95em;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity .15s;
+  color: var(--accent);
+}
+.para-wrap:hover .para-comment-btn,
+.para-wrap:focus-within .para-comment-btn { opacity: 1; }
+
+/* painel inline que abre abaixo do parágrafo */
+.para-panel {
+  margin-top: 10px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  font-family: system-ui, sans-serif;
+  font-size: .9rem;
+}
+
+.comment-list { list-style: none; padding: 0; margin: 0 0 12px; }
+.para-comment-list { margin-bottom: 12px; }
+.comment { padding: 10px 12px; border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 3px; background: var(--bg); margin-bottom: 6px; }
+.comment-head { display: flex; justify-content: space-between; gap: 8px; font-size: .85rem; }
+.comment-date { color: var(--muted); font-family: var(--mono); font-size: .78rem; }
+.comment p { margin: 5px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; }
+.comment-form { display: flex; flex-direction: column; gap: 7px; }
 .comment-form input[type="text"], .comment-form textarea {
-  font: inherit; font-size: 15px; color: var(--text); background: var(--surface);
-  border: 1px solid var(--border); border-radius: 3px; padding: 8px 10px; width: 100%;
+  font: inherit; font-size: 14px; color: var(--text); background: var(--bg);
+  border: 1px solid var(--border); border-radius: 3px; padding: 7px 9px; width: 100%;
 }
 .comment-form .btn { align-self: flex-start; }
 .comment-form .btn:disabled { opacity: .5; cursor: default; }
