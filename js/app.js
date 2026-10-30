@@ -83,33 +83,78 @@
     return b;
   }
 
-  // ::: tweet Nome | @usuario | 14:32 · 12 mar
+  // ::: tweet Nome | @usuario | 08:42 · 01 jun. 26
+  //   :foto https://url-da-foto.jpg     (opcional — foto de perfil)
   //   texto do post (várias linhas)
-  //   + 12 respostas · 340 curtidas      (linha de estatísticas, opcional)
+  //   :img https://url-da-imagem.jpg    (opcional — imagem no corpo)
+  //   + 2,4 mil Visualizações · 340 Retweets   (linha de stats, opcional)
   function renderTweet(title, lines) {
     var parts = title.split("|").map(function (s) { return s.trim(); });
     var name = parts[0] || "Anônimo";
-    var card = el("div", { "class": "chat tw" });
-    card.appendChild(el("span", { "class": "avatar" }, name.charAt(0).toUpperCase()));
-    var main = el("div", { "class": "tw-main" });
-    var head = el("div", { "class": "tw-head" });
-    head.appendChild(el("strong", null, name));
-    if (parts[1]) head.appendChild(el("span", { "class": "tw-user" }, parts[1]));
-    main.appendChild(head);
+    var handle = parts[1] || "";
+    var datetime = parts[2] || "";
+
+    // separa diretivas especiais das linhas de texto
+    var photoUrl = "";
+    var imgUrl = "";
     var stats = "";
-    var text = [];
+    var textLines = [];
     lines.forEach(function (l) {
-      if (/^\+\s/.test(l.trim())) stats = l.trim().slice(1).trim(); else text.push(l);
+      var lt = l.trim();
+      var mPhoto = lt.match(/^:foto\s+(\S+)$/i);
+      var mImg   = lt.match(/^:img\s+(\S+)$/i);
+      if (mPhoto) { photoUrl = mPhoto[1]; }
+      else if (mImg) { imgUrl = mImg[1]; }
+      else if (/^\+\s/.test(lt)) { stats = lt.slice(1).trim(); }
+      else { textLines.push(l); }
     });
-    text.join("\n").split(/\n{2,}/).forEach(function (par) {
+
+    var card = el("div", { "class": "chat tw" });
+
+    // avatar: imagem ou inicial
+    if (photoUrl) {
+      var avatarImg = el("img", { "class": "avatar tw-avatar-img", src: photoUrl, alt: name, loading: "lazy" });
+      card.appendChild(avatarImg);
+    } else {
+      card.appendChild(el("span", { "class": "avatar" }, name.charAt(0).toUpperCase()));
+    }
+
+    var main = el("div", { "class": "tw-main" });
+
+    // cabeçalho: nome + handle + ícone X
+    var head = el("div", { "class": "tw-head" });
+    var nameBlock = el("div", { "class": "tw-name-block" });
+    nameBlock.appendChild(el("strong", { "class": "tw-name" }, name));
+    if (handle) nameBlock.appendChild(el("span", { "class": "tw-user" }, handle));
+    head.appendChild(nameBlock);
+    head.appendChild(el("span", { "class": "tw-x-icon", "aria-hidden": "true" }, "𝕏"));
+    main.appendChild(head);
+
+    // corpo do texto
+    textLines.join("\n").split(/\n{2,}/).forEach(function (par) {
       par = par.trim();
       if (!par) return;
       var p = el("p", { "class": "tw-text" });
       inline(p, par.replace(/\n/g, " "));
       main.appendChild(p);
     });
-    if (parts[2]) main.appendChild(el("div", { "class": "tw-meta" }, parts[2]));
-    if (stats) main.appendChild(el("div", { "class": "tw-stats" }, stats));
+
+    // imagem no corpo
+    if (imgUrl) {
+      var imgWrap = el("div", { "class": "tw-img-wrap" });
+      imgWrap.appendChild(el("img", { src: imgUrl, alt: "", loading: "lazy", "class": "tw-img" }));
+      main.appendChild(imgWrap);
+    }
+
+    // data/hora
+    if (datetime) main.appendChild(el("div", { "class": "tw-meta" }, datetime));
+
+    // linha separadora + stats
+    if (stats) {
+      main.appendChild(el("hr", { "class": "tw-divider" }));
+      main.appendChild(el("div", { "class": "tw-stats" }, stats));
+    }
+
     card.appendChild(main);
     return card;
   }

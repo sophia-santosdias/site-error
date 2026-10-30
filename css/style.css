@@ -257,14 +257,25 @@ body[data-theme="dark"]   { --wa-bg:#0a0a14; --wa-head:#10101e; --wa-in:#14142a;
 .wa-text { white-space: pre-wrap; }
 .wa-time { display: block; text-align: right; font-size: 10px; opacity: .5; margin-top: 2px; font-family: var(--mono); }
 
-.tw { display: flex; gap: 12px; padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
+.tw {
+  display: flex; gap: 12px; padding: 16px 14px 12px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+}
+.tw-avatar-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex: none; }
 .tw-main { min-width: 0; flex: 1; }
-.tw-head { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
-.tw-user { color: var(--code); font-family: var(--mono); font-size: .85rem; }
-.tw-text { margin: 4px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; text-align: left; }
-.chapter .text .tw-text { margin: 4px 0 0; }
-.tw-meta { color: var(--muted); font-size: 12px; margin-top: 8px; font-family: var(--mono); }
-.tw-stats { color: var(--muted); font-size: 12px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-family: var(--mono); }
+.tw-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
+.tw-name-block { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.tw-name { font-size: .95rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tw-user { color: var(--muted); font-size: .85rem; }
+.tw-x-icon { color: var(--muted); font-size: 1.1rem; flex: none; margin-top: 1px; }
+.tw-text { margin: 6px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; text-align: left; font-size: .97rem; line-height: 1.5; }
+.chapter .text .tw-text { margin: 6px 0 0; }
+.tw-img-wrap { margin-top: 10px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+.tw-img { display: block; width: 100%; height: auto; max-height: 320px; object-fit: cover; }
+.tw-meta { color: var(--muted); font-size: .82rem; margin-top: 10px; }
+.tw-divider { border: 0; border-top: 1px solid var(--border); margin: 10px 0 8px; }
+.tw-stats { color: var(--muted); font-size: .82rem; display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.tw-stats strong { color: var(--text); }
 
 /* ---------- telas pequenas ---------- */
 img, svg, video { max-width: 100%; height: auto; }

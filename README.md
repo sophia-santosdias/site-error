@@ -26,13 +26,17 @@ WhatsApp (o texto depois de `whatsapp` é o nome do contato):
 
 Tweet (`Nome | @usuario | data e hora`, os dois últimos opcionais):
 
-    ::: tweet Rádio da Cidade | @radiodacidade | 07:30 · 12 mar
-    Texto do post, pode ter várias linhas.
-
-    + 128 respostas · 2,4 mil curtidas
+    ::: tweet Eduarda Fragoso | @dudafragoso | 08:42 PM · 01 jun. 26
+    :foto https://exemplo.com/foto-de-perfil.jpg
+    Tô sentindo um cheirinho, quem mais?
+    :img https://exemplo.com/imagem-do-post.jpg
+    + 2,648 Visualizações · 2,949 Retweets
     :::
 
-A linha que começa com `+` é a de estatísticas (opcional).
+- `:foto URL` — foto de perfil (opcional; sem ela usa a inicial do nome)
+- `:img URL` — imagem no corpo do tweet (opcional)
+- A linha que começa com `+` é a de estatísticas (opcional)
+- Todos os campos do cabeçalho depois do nome são opcionais
 
 ## Testar localmente
 Os capítulos são carregados via `fetch`, então é preciso um servidor (não abra o arquivo direto):
