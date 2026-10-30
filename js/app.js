@@ -98,17 +98,23 @@
   }
 
   // ::: tweet Nome | @usuario | 08:42 · 01 jun. 26
-  //   :foto https://url-da-foto.jpg     (opcional — foto de perfil)
+  //   :foto https://url.jpg             (opcional — foto de perfil)
   //   texto do post (várias linhas)
-  //   :img https://url-da-imagem.jpg    (opcional — imagem no corpo)
-  //   + 2,4 mil Visualizações · 340 Retweets   (linha de stats, opcional)
-  function renderTweet(title, lines) {
+  //   :img https://url.jpg              (opcional — imagem no corpo)
+  //   + 2,4 mil Visualizações · 340 Retweets   (opcional)
+  //
+  //   :resposta Nome | @handle | hora   (zero ou mais respostas encadeadas)
+  //   :foto https://url.jpg
+  //   Texto da resposta
+  //   + stats
+
+  // Constrói um único card de tweet (sem respostas).
+  function buildTweetCard(title, lines, isReply) {
     var parts = title.split("|").map(function (s) { return s.trim(); });
     var name = parts[0] || "Anônimo";
     var handle = parts[1] || "";
     var datetime = parts[2] || "";
 
-    // separa diretivas especiais das linhas de texto
     var photoUrl = "";
     var imgUrl = "";
     var stats = "";
@@ -123,28 +129,29 @@
       else { textLines.push(l); }
     });
 
-    var card = el("div", { "class": "chat tw" });
+    var card = el("div", { "class": isReply ? "tw-reply" : "chat tw" });
 
-    // avatar: imagem ou inicial
+    // coluna esquerda: avatar + fio (se for tweet-pai com respostas, fio é adicionado via CSS)
+    var leftCol = el("div", { "class": "tw-left" });
     if (photoUrl) {
-      var avatarImg = el("img", { "class": "avatar tw-avatar-img", src: photoUrl, alt: name, loading: "lazy" });
-      card.appendChild(avatarImg);
+      leftCol.appendChild(el("img", { "class": "avatar tw-avatar-img", src: photoUrl, alt: name, loading: "lazy" }));
     } else {
-      card.appendChild(el("span", { "class": "avatar" }, name.charAt(0).toUpperCase()));
+      leftCol.appendChild(el("span", { "class": "avatar" }, name.charAt(0).toUpperCase()));
     }
+    card.appendChild(leftCol);
 
     var main = el("div", { "class": "tw-main" });
 
-    // cabeçalho: nome + handle + ícone X
+    // cabeçalho
     var head = el("div", { "class": "tw-head" });
     var nameBlock = el("div", { "class": "tw-name-block" });
     nameBlock.appendChild(el("strong", { "class": "tw-name" }, name));
     if (handle) nameBlock.appendChild(el("span", { "class": "tw-user" }, handle));
     head.appendChild(nameBlock);
-    head.appendChild(el("span", { "class": "tw-x-icon", "aria-hidden": "true" }, "𝕏"));
+    if (!isReply) head.appendChild(el("span", { "class": "tw-x-icon", "aria-hidden": "true" }, "𝕏"));
     main.appendChild(head);
 
-    // corpo do texto
+    // texto
     textLines.join("\n").split(/\n{2,}/).forEach(function (par) {
       par = par.trim();
       if (!par) return;
@@ -153,7 +160,7 @@
       main.appendChild(p);
     });
 
-    // imagem no corpo
+    // imagem
     if (imgUrl) {
       var imgWrap = el("div", { "class": "tw-img-wrap" });
       imgWrap.appendChild(el("img", { src: imgUrl, alt: "", loading: "lazy", "class": "tw-img" }));
@@ -163,7 +170,7 @@
     // data/hora
     if (datetime) main.appendChild(el("div", { "class": "tw-meta" }, datetime));
 
-    // linha separadora + stats
+    // stats
     if (stats) {
       main.appendChild(el("hr", { "class": "tw-divider" }));
       main.appendChild(el("div", { "class": "tw-stats" }, stats));
@@ -171,6 +178,36 @@
 
     card.appendChild(main);
     return card;
+  }
+
+  // Quebra as linhas em grupos: [{ title, lines }, ...] sendo o primeiro o tweet-pai
+  // e os demais as respostas (delimitadas por :resposta).
+  function splitTweetGroups(title, lines) {
+    var groups = [{ title: title, lines: [] }];
+    lines.forEach(function (l) {
+      var m = l.trim().match(/^:resposta\s+(.+)$/i);
+      if (m) { groups.push({ title: m[1].trim(), lines: [] }); }
+      else { groups[groups.length - 1].lines.push(l); }
+    });
+    return groups;
+  }
+
+  function renderTweet(title, lines) {
+    var groups = splitTweetGroups(title, lines);
+    var hasReplies = groups.length > 1;
+
+    // wrapper só quando há thread
+    if (!hasReplies) return buildTweetCard(title, lines, false);
+
+    var thread = el("div", { "class": "tw-thread" });
+    groups.forEach(function (g, i) {
+      var isReply = i > 0;
+      var card = buildTweetCard(g.title, g.lines, isReply);
+      // marca o tweet-pai com classe especial para desenhar o fio abaixo do avatar
+      if (!isReply) card.classList.add("tw-has-replies");
+      thread.appendChild(card);
+    });
+    return thread;
   }
 
   var _paraCount = 0;
