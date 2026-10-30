@@ -1,4 +1,6 @@
 // Configurações do site. Edite aqui.
+// Para desenvolvimento local: copie este arquivo como js/config.local.js
+// e preencha url e anonKey lá. O arquivo config.local.js é ignorado pelo git.
 window.SITE_CONFIG = {
   title: "ERROR 404",
   subtitle: "",
