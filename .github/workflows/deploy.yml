@@ -30,17 +30,8 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          cat > js/config.local.js << 'ENDOFFILE'
-          // Gerado automaticamente pelo GitHub Actions — não editar.
-          window.SITE_CONFIG = Object.assign(window.SITE_CONFIG || {}, {
-            comments: {
-              url: "SUPABASE_URL_PLACEHOLDER",
-              anonKey: "SUPABASE_ANON_KEY_PLACEHOLDER"
-            }
-          });
-          ENDOFFILE
-          sed -i "s|SUPABASE_URL_PLACEHOLDER|${SUPABASE_URL}|g" js/config.local.js
-          sed -i "s|SUPABASE_ANON_KEY_PLACEHOLDER|${SUPABASE_ANON_KEY}|g" js/config.local.js
+          printf '// Gerado automaticamente pelo GitHub Actions.\nwindow.SITE_CONFIG.comments = { url: "%s", anonKey: "%s" };\n' \
+            "$SUPABASE_URL" "$SUPABASE_ANON_KEY" > js/config.local.js
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
