@@ -12,17 +12,17 @@
 /* Glitch (padrão) */
 body[data-theme="light"] {
   --bg:#0d0d0d; --surface:#141414; --text:#e8e4df; --muted:#6b6560; --border:#2a2420;
-  --accent:#e8700a; --on-accent:#0d0d0d; --code:#39d98a; --strip:#060606;
+  --accent:#e8700a; --on-accent:#0d0d0d; --code:#4a7c4a; --strip:#060606;
 }
 /* Âmbar */
 body[data-theme="sepia"] {
   --bg:#100c00; --surface:#1a1400; --text:#f5e6c8; --muted:#7a6a3a; --border:#2e2300;
-  --accent:#f0a500; --on-accent:#100c00; --code:#6dbd6d; --strip:#060400;
+  --accent:#f0a500; --on-accent:#100c00; --code:#4a7a3a; --strip:#060400;
 }
 /* Neon */
 body[data-theme="dark"] {
   --bg:#06060a; --surface:#0e0e18; --text:#dcdaef; --muted:#5a5870; --border:#1c1c2e;
-  --accent:#ff6b5a; --on-accent:#06060a; --code:#5be3a5; --strip:#020206;
+  --accent:#ff6b5a; --on-accent:#06060a; --code:#4a8c6a; --strip:#020206;
 }
 
 * { box-sizing: border-box; }
@@ -101,6 +101,7 @@ a { color: var(--accent); }
   margin: 0 0 28px; padding: 0 28px;
   min-height: 1.4em; /* evita colapso quando vazio */
 }
+.home .sub s { color: var(--muted); text-decoration-color: var(--accent); }
 .home .sub:not(:empty)::before { content: "> "; color: var(--muted); }
 .home .sub:not(:empty)::after {
   content: "\2588"; margin-left: 4px; color: var(--accent);

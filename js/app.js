@@ -413,7 +413,18 @@
     document.title = cfg.title;
     var box = el("section", { "class": "home" });
     box.appendChild(el("h1", null, cfg.title));
-    box.appendChild(el("p", { "class": "sub" }, cfg.subtitle));
+    // subtítulo: suporta <s> para texto riscado via marcação ~texto~
+    var subEl = el("p", { "class": "sub" });
+    if (cfg.subtitle) {
+      cfg.subtitle.split(/(~[^~]+~)/).forEach(function (part) {
+        if (part.charAt(0) === "~" && part.length > 2) {
+          subEl.appendChild(el("s", null, part.slice(1, -1)));
+        } else if (part) {
+          subEl.appendChild(document.createTextNode(part));
+        }
+      });
+    }
+    box.appendChild(subEl);
 
     var last = store("last");
     var target = chapters.filter(function (c) { return c.id === last; })[0];

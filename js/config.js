@@ -3,7 +3,7 @@
 // e preencha url e anonKey lá. O arquivo config.local.js é ignorado pelo git.
 window.SITE_CONFIG = {
   title: "ERROR 404",
-  subtitle: "",
+  subtitle: "~PAGE~ PHOTO NOT FOUND",
 
   // Comentários via Supabase (passo a passo no README.md).
   // Enquanto url e anonKey estiverem vazios, a seção de comentários não aparece no site.
