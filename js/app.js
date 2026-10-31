@@ -319,7 +319,7 @@
     panel.appendChild(status);
     panel.appendChild(list);
 
-    api("comments?select=author,body,created_at&approved=eq.true&chapter_id=eq." +
+    api("comments?select=author,body,created_at&chapter_id=eq." +
         encodeURIComponent(chapterId) +
         "&paragraph_index=eq." + paraIdx +
         "&order=created_at.asc&limit=100")
@@ -350,11 +350,11 @@
       api("comments", {
         method: "POST",
         headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
-        body: JSON.stringify({ chapter_id: chapterId, paragraph_index: paraIdx, author: author, body: text })
+        body: JSON.stringify({ chapter_id: chapterId, paragraph_index: paraIdx, author: author, body: text, approved: true })
       }).then(function () {
         store("lastComment", String(Date.now()));
         body.value = "";
-        msg.textContent = "Obrigado! Aparecerá após aprovação.";
+        msg.textContent = "Comentário enviado!";
       }).catch(function () {
         msg.textContent = "Erro ao enviar. Tente novamente.";
       }).then(function () { btn.disabled = false; });

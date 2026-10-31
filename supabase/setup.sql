@@ -1,6 +1,5 @@
 -- Cole este script no Supabase: SQL Editor -> New query -> Run.
--- Se já tinha rodado a versão anterior, rode apenas o bloco "ALTER TABLE" abaixo
--- para adicionar a coluna paragraph_index sem recriar a tabela.
+-- Se a tabela já existe, rode apenas os comandos ALTER/DROP/CREATE abaixo.
 
 create table if not exists public.comments (
   id              bigint generated always as identity primary key,
@@ -8,32 +7,33 @@ create table if not exists public.comments (
   paragraph_index integer     not null default -1,
   author          text        not null check (char_length(author) between 1 and 50),
   body            text        not null check (char_length(body) between 1 and 2000),
-  approved        boolean     not null default false,
+  approved        boolean     not null default true,
   created_at      timestamptz not null default now()
 );
 
--- Se a tabela já existia sem a coluna, adicione-a com este comando:
--- alter table public.comments add column if not exists paragraph_index integer not null default -1;
+-- Se a tabela já existia, atualize o default da coluna approved:
+-- alter table public.comments alter column approved set default true;
 
 create index if not exists comments_chapter_idx on public.comments (chapter_id, paragraph_index, created_at);
 
 alter table public.comments enable row level security;
 
--- Privilégios mínimos para o público (papel "anon"):
--- pode LER e ENVIAR, mas nunca editar, apagar nem se auto-aprovar.
 revoke all on public.comments from anon, authenticated;
 grant select on public.comments to anon;
 grant insert (chapter_id, paragraph_index, author, body) on public.comments to anon;
 
+-- Leitura: todos os comentários (sem filtro de aprovação)
 drop policy if exists "ler comentarios aprovados" on public.comments;
-create policy "ler comentarios aprovados"
+drop policy if exists "ler todos comentarios" on public.comments;
+create policy "ler todos comentarios"
   on public.comments for select to anon
-  using (approved = true);
+  using (true);
 
+-- Envio: qualquer comentário é aceito (approved é ignorado pelo anon)
 drop policy if exists "enviar comentarios pendentes" on public.comments;
-create policy "enviar comentarios pendentes"
+drop policy if exists "enviar comentarios" on public.comments;
+create policy "enviar comentarios"
   on public.comments for insert to anon
-  with check (approved = false);
+  with check (true);
 
--- Para aprovar: Table Editor -> comments -> marque "approved" na linha.
--- Para remover: apague a linha no Table Editor.
+-- Para remover um comentário: apague a linha no Table Editor.
