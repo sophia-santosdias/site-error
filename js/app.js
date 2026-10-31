@@ -512,32 +512,14 @@
   // ---------- nota da autora ----------
   function renderAuthorNote(lines) {
     if (!lines.length) return null;
-    var author = (cfg.author) || {};
-    var name = author.name || "Autora";
-    var avatar = author.avatar || "";
 
     var wrap = el("details", { "class": "author-note" });
     var summary = el("summary", { "class": "author-note-header" });
-
-    // avatar: foto ou inicial
-    var avEl;
-    if (avatar) {
-      avEl = el("img", { src: avatar, alt: name, "class": "author-note-avatar" });
-    } else {
-      avEl = el("span", { "class": "author-note-avatar author-note-initial" }, name.charAt(0).toUpperCase());
-    }
-    summary.appendChild(avEl);
-
-    var label = el("span", { "class": "author-note-label" });
-    label.appendChild(el("span", { "class": "author-note-name" }, name));
-    label.appendChild(el("span", { "class": "author-note-sub" }, "Nota da autora"));
-    summary.appendChild(label);
-
+    summary.appendChild(el("span", { "class": "author-note-label" }, "Nota da autora"));
     summary.appendChild(el("span", { "class": "author-note-chevron" }, "▾"));
     wrap.appendChild(summary);
 
     var body = el("div", { "class": "author-note-body" });
-    // agrupa linhas em parágrafos (separa por linha em branco)
     lines.join("\n").split(/\n{2,}/).forEach(function (par) {
       par = par.trim();
       if (par) body.appendChild(el("p", null, par.replace(/\n/g, " ")));

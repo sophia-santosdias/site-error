@@ -386,25 +386,17 @@ body[data-theme="dark"]   { --wa-bg:#0a0a14; --wa-head:#10101e; --wa-in:#14142a;
   overflow: hidden;
 }
 .author-note-header {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 16px; cursor: pointer;
-  list-style: none; /* remove seta padrão do <summary> */
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; cursor: pointer;
+  list-style: none;
   user-select: none;
 }
 .author-note-header::-webkit-details-marker { display: none; }
 .author-note-header:hover { background: var(--bg); }
-.author-note-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  object-fit: cover; flex: none;
+.author-note-label {
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .15em;
+  text-transform: uppercase; color: var(--muted);
 }
-.author-note-initial {
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--accent); color: var(--on-accent);
-  font-family: var(--mono); font-weight: 700; font-size: .95rem;
-}
-.author-note-label { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
-.author-note-name  { font-family: var(--mono); font-size: .88rem; font-weight: 700; color: var(--text); }
-.author-note-sub   { font-family: var(--mono); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .author-note-chevron {
   color: var(--muted); font-size: .8rem; transition: transform .2s; flex: none;
 }
