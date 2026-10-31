@@ -225,26 +225,43 @@ a { color: var(--accent); }
 
 .para-comment-btn {
   position: absolute;
-  left: 0; top: .3em;
-  background: none; border: none; padding: 0;
+  left: 0; top: .25em;
+  background: none; border: none; padding: 2px;
   cursor: pointer;
-  font-size: .7em; font-family: var(--mono);
   line-height: 1; opacity: 0;
-  transition: opacity .15s;
+  transition: opacity .15s, color .15s;
   color: var(--muted);
   user-select: none;
+  display: flex; align-items: center;
 }
 .para-comment-btn:hover { color: var(--accent); }
 .para-wrap:hover .para-comment-btn,
 .para-wrap:focus-within .para-comment-btn { opacity: 1; }
 
 .para-panel {
-  margin-top: 10px; padding: 14px 16px;
+  margin-top: 10px; padding: 0;
   background: var(--surface);
   border: 1px solid var(--border); border-left: 2px solid var(--accent);
   border-radius: 2px;
   font-family: var(--mono); font-size: .88rem;
+  overflow: hidden;
 }
+.para-panel-close-bar {
+  display: flex; justify-content: flex-end;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.para-panel-close {
+  background: none; border: none; cursor: pointer;
+  font-size: 1.1rem; line-height: 1; padding: 2px 6px;
+  color: var(--muted); border-radius: 2px;
+  transition: color .15s, background .15s;
+}
+.para-panel-close:hover { color: var(--text); background: var(--bg); }
+.para-panel > *:not(.para-panel-close-bar) { padding-left: 16px; padding-right: 16px; }
+.para-panel > .comment-list { padding-top: 10px; }
+.para-panel > .notice { padding-top: 10px; padding-bottom: 0; }
+.para-panel > .comment-form { padding-bottom: 14px; }
 
 .comment-list { list-style: none; padding: 0; margin: 0 0 12px; }
 .para-comment-list { margin-bottom: 12px; }

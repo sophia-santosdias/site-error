@@ -220,7 +220,7 @@
     var wrap = el("div", { "class": "para-wrap" });
     if (commentsEnabled() && chapterId != null) {
       var btn = el("button", { type: "button", "class": "para-comment-btn", "aria-label": "Comentar este trecho", "data-idx": String(idx) });
-      btn.textContent = "¶";
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
       btn.addEventListener("click", function () { toggleParaPanel(wrap, chapterId, idx); });
       wrap.appendChild(btn);
     }
@@ -367,6 +367,12 @@
 
   function buildParaPanel(chapterId, paraIdx) {
     var panel = el("div", { "class": "para-panel" });
+
+    var closeBar = el("div", { "class": "para-panel-close-bar" });
+    var closeBtn = el("button", { type: "button", "class": "para-panel-close", "aria-label": "Fechar comentários" }, "×");
+    closeBtn.addEventListener("click", function () { panel.remove(); });
+    closeBar.appendChild(closeBtn);
+    panel.appendChild(closeBar);
 
     var list = el("ul", { "class": "comment-list para-comment-list" });
     var status = el("p", { "class": "notice" }, "Carregando...");
