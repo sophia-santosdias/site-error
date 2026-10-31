@@ -172,8 +172,8 @@
 
     // stats
     if (stats) {
-      main.appendChild(el("hr", { "class": "tw-divider" }));
-      main.appendChild(el("div", { "class": "tw-stats" }, stats));
+      var statsEl = el("div", { "class": "tw-stats" }, stats);
+      main.appendChild(statsEl);
     }
 
     card.appendChild(main);
