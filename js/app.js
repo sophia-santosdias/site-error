@@ -433,8 +433,10 @@
               perfil.appendChild(twHead);
               // stats
               var twStats = el("div", { "class": "char-tw-stats" });
-              twStats.appendChild(el("span", null, tw.seguindo + " Seguindo"));
-              twStats.appendChild(el("span", null, tw.seguidores + " Seguidores"));
+              var s1 = el("span"); s1.appendChild(el("b", null, tw.seguindo)); s1.appendChild(document.createTextNode(" Seguindo"));
+              var s2 = el("span"); s2.appendChild(el("b", null, tw.seguidores)); s2.appendChild(document.createTextNode(" Seguidores"));
+              twStats.appendChild(s1);
+              twStats.appendChild(s2);
               perfil.appendChild(twStats);
               info.appendChild(perfil);
             }
