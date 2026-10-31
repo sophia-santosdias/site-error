@@ -1,4 +1,4 @@
 [
-  { "id": "1", "title": "Capítulo 1 – O começo", "file": "01.txt" },
-  { "id": "2", "title": "Capítulo 2 – A estrada", "file": "02.txt" }
+  { "id": "1", "title": "Capítulo 1", "file": "01.txt" },
+  { "id": "2", "title": "Capítulo 2", "file": "02.txt" }
 ]
