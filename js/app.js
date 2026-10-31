@@ -214,23 +214,37 @@
 
   function resetParaCount() { _paraCount = 0; }
 
+  // Envolve qualquer elemento DOM em um .para-wrap com botão de comentário
+  function wrapWithComment(node, chapterId) {
+    var idx = _paraCount++;
+    var wrap = el("div", { "class": "para-wrap" });
+    if (commentsEnabled() && chapterId != null) {
+      var btn = el("button", { type: "button", "class": "para-comment-btn", "aria-label": "Comentar este trecho", "data-idx": String(idx) });
+      btn.textContent = "¶";
+      btn.addEventListener("click", function () { toggleParaPanel(wrap, chapterId, idx); });
+      wrap.appendChild(btn);
+    }
+    wrap.appendChild(node);
+    return wrap;
+  }
+
   function renderParagraphs(box, lines, chapterId) {
     lines.join("\n").split(/\n{2,}/).forEach(function (block) {
       block = block.trim();
       if (!block) return;
       if (block === "---") { box.appendChild(el("hr")); return; }
-      var idx = _paraCount++;
-      var wrap = el("div", { "class": "para-wrap" });
+      // == Ponto de Vista: Nome == → marcador especial
+      var pvMatch = block.match(/^==\s*(.+?)\s*==$/);
+      if (pvMatch) {
+        var pv = el("div", { "class": "ponto-de-vista" });
+        pv.appendChild(el("span", { "class": "pdv-label" }, "Ponto de Vista"));
+        pv.appendChild(el("span", { "class": "pdv-nome" }, pvMatch[1]));
+        box.appendChild(pv);
+        return;
+      }
       var p = el("p");
       inline(p, block.replace(/\n/g, " "));
-      if (commentsEnabled() && chapterId != null) {
-        var btn = el("button", { type: "button", "class": "para-comment-btn", "aria-label": "Comentar este parágrafo", "data-idx": String(idx) });
-        btn.textContent = "¶";
-        btn.addEventListener("click", function () { toggleParaPanel(wrap, chapterId, idx); });
-        wrap.appendChild(btn);
-      }
-      wrap.appendChild(p);
-      box.appendChild(wrap);
+      box.appendChild(wrapWithComment(p, chapterId));
     });
   }
 
@@ -246,8 +260,8 @@
       for (i++; i < lines.length && lines[i].trim() !== ":::"; i++) inner.push(lines[i]);
       renderParagraphs(box, buf, chapterId); buf = [];
       var kind = m[1].toLowerCase(), title = m[2].trim();
-      if (kind === "whatsapp") box.appendChild(renderWhatsapp(title, inner));
-      else if (kind === "tweet" || kind === "twitter") box.appendChild(renderTweet(title, inner));
+      if (kind === "whatsapp") box.appendChild(wrapWithComment(renderWhatsapp(title, inner), chapterId));
+      else if (kind === "tweet" || kind === "twitter") box.appendChild(wrapWithComment(renderTweet(title, inner), chapterId));
       else renderParagraphs(box, inner, chapterId);
     }
     renderParagraphs(box, buf, chapterId);
