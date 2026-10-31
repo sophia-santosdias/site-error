@@ -548,8 +548,30 @@
   }
   window.addEventListener("scroll", onScroll, { passive: true });
 
+  // ---------- barra mobile ----------
+  function updateMobileBar() {
+    var mbHome  = document.getElementById("mb-home");
+    var mbChars = document.getElementById("mb-chars");
+    if (!mbHome) return;
+    var isChars = location.hash === "#/personagens";
+    mbHome.classList.toggle("active", !isChars);
+    mbChars.classList.toggle("active", isChars);
+  }
+
+  var mbTheme = document.getElementById("mb-theme-toggle");
+  var mbThemeIcon = document.getElementById("mb-theme-icon");
+  var themes = ["light", "sepia", "dark"];
+  if (mbTheme) {
+    mbTheme.addEventListener("click", function (e) {
+      e.preventDefault();
+      var cur = themes.indexOf(store("theme") || "light");
+      applyTheme(themes[(cur + 1) % themes.length]);
+    });
+  }
+
   // ---------- roteamento ----------
   function route() {
+    updateMobileBar();
     if (location.hash === "#/personagens") { personagensPage(); return; }
     var m = location.hash.match(/^#\/cap\/([\w-]+)$/);
     if (m) chapterPage(m[1]); else home();
