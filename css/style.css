@@ -101,6 +101,20 @@ a { color: var(--accent); }
   margin: 0 0 28px; padding: 0 28px;
   min-height: 1.4em; /* evita colapso quando vazio */
 }
+/* sinopse */
+.sinopse {
+  margin: 0 0 28px; padding: 20px 28px;
+  border-left: 2px solid var(--accent);
+  background: var(--surface);
+  border-radius: 0 3px 3px 0;
+}
+.sinopse p {
+  font-family: var(--serif); font-size: 1rem; line-height: 1.75;
+  color: var(--text); margin: 0 0 .8em;
+}
+.sinopse p:last-child { margin: 0; }
+.sinopse p:first-child { font-style: italic; }
+
 .home .sub s { color: var(--muted); text-decoration-color: var(--accent); }
 .home .sub:not(:empty)::before { content: "> "; color: var(--muted); }
 .home .sub:not(:empty)::after {

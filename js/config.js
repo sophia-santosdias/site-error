@@ -4,6 +4,11 @@
 window.SITE_CONFIG = {
   title: "ERROR 404",
   subtitle: "~PAGE~ PHOTO NOT FOUND",
+  sinopse: [
+    "\"Lo, eu amo sua voz, amo seu jeito, amo o que a gente tem, mas eu cansei de namorar uma tela estática\".",
+    "Depois de dez meses, Eduarda conhece quase tudo sobre a mulher por quem está apaixonada.",
+    "Tudo, exceto a verdade."
+  ],
 
   // Comentários via Supabase (passo a passo no README.md).
   // Enquanto url e anonKey estiverem vazios, a seção de comentários não aparece no site.

@@ -426,6 +426,14 @@
     }
     box.appendChild(subEl);
 
+    if (cfg.sinopse && cfg.sinopse.length) {
+      var sinopseEl = el("div", { "class": "sinopse" });
+      cfg.sinopse.forEach(function (par) {
+        sinopseEl.appendChild(el("p", null, par));
+      });
+      box.appendChild(sinopseEl);
+    }
+
     var last = store("last");
     var target = chapters.filter(function (c) { return c.id === last; })[0];
     if (target) box.appendChild(el("a", { "class": "btn primary", href: "#/cap/" + target.id }, "Continuar: " + target.title));
