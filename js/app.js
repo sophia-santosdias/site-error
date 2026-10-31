@@ -400,6 +400,7 @@
           var sec = el("div", { "class": "nucleo" });
           sec.appendChild(el("h2", { "class": "nucleo-nome" }, nucleo.nucleo));
           nucleo.personagens.forEach(function (p) {
+            // card: foto + descrição
             var card = el("div", { "class": "char-card" });
             var fotoWrap = el("div", { "class": "char-foto-wrap" });
             fotoWrap.appendChild(el("img", { src: p.foto, alt: p.nome, "class": "char-foto", loading: "lazy" }));
@@ -409,17 +410,18 @@
             p.descricao.forEach(function (par) {
               info.appendChild(el("p", { "class": "char-desc" }, par));
             });
-            // mini-perfil do Twitter
+            card.appendChild(info);
+            sec.appendChild(card);
+
+            // perfil do Twitter: bloco separado, largura total, abaixo do card
             if (p.twitter) {
               var tw = p.twitter;
               var perfil = el("div", { "class": "char-twitter" });
-              // banner
               if (tw.banner) {
                 var banner = el("div", { "class": "char-tw-banner" });
                 banner.appendChild(el("img", { src: tw.banner, alt: "", loading: "lazy" }));
                 perfil.appendChild(banner);
               }
-              // avatar + nome + handle + bio (tudo no twHead)
               var twHead = el("div", { "class": "char-tw-head" });
               var twAvatar = el("div", { "class": "char-tw-avatar" });
               if (tw.avatar) twAvatar.appendChild(el("img", { src: tw.avatar, alt: p.nome, loading: "lazy" }));
@@ -431,17 +433,14 @@
               if (tw.handle) twHead.appendChild(el("div", { "class": "char-tw-handle" }, tw.handle));
               if (tw.bio) twHead.appendChild(el("div", { "class": "char-tw-bio" }, tw.bio));
               perfil.appendChild(twHead);
-              // stats
               var twStats = el("div", { "class": "char-tw-stats" });
               var s1 = el("span"); s1.appendChild(el("b", null, tw.seguindo)); s1.appendChild(document.createTextNode(" Seguindo"));
               var s2 = el("span"); s2.appendChild(el("b", null, tw.seguidores)); s2.appendChild(document.createTextNode(" Seguidores"));
               twStats.appendChild(s1);
               twStats.appendChild(s2);
               perfil.appendChild(twStats);
-              info.appendChild(perfil);
+              sec.appendChild(perfil);
             }
-            card.appendChild(info);
-            sec.appendChild(card);
           });
           box.appendChild(sec);
         });

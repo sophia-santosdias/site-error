@@ -399,9 +399,10 @@ body[data-theme="dark"]   { --wa-bg:#0a0a14; --wa-head:#10101e; --wa-in:#14142a;
   color: var(--text); margin: 0; text-align: justify;
 }
 
-/* mini-perfil twitter no card de personagem */
+/* mini-perfil twitter — bloco separado abaixo do card */
 .char-twitter {
-  margin-top: 20px;
+  margin-top: 0;
+  margin-bottom: 28px;
   border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;
