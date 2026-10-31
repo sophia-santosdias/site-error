@@ -319,16 +319,21 @@
     panel.appendChild(status);
     panel.appendChild(list);
 
-    api("comments?select=author,body,created_at&chapter_id=eq." +
-        encodeURIComponent(chapterId) +
-        "&paragraph_index=eq." + paraIdx +
-        "&order=created_at.asc&limit=100")
-      .then(function (r) { return r.json(); })
-      .then(function (rows) {
-        status.textContent = rows.length ? "" : "Nenhum comentário ainda.";
-        rows.forEach(function (row) { list.appendChild(commentItem(row)); });
-      })
-      .catch(function () { status.textContent = "Não foi possível carregar."; });
+    function loadComments() {
+      list.innerHTML = "";
+      status.textContent = "Carregando...";
+      api("comments?select=author,body,created_at&chapter_id=eq." +
+          encodeURIComponent(chapterId) +
+          "&paragraph_index=eq." + paraIdx +
+          "&order=created_at.asc&limit=100")
+        .then(function (r) { return r.json(); })
+        .then(function (rows) {
+          status.textContent = rows.length ? "" : "Nenhum comentário ainda.";
+          rows.forEach(function (row) { list.appendChild(commentItem(row)); });
+        })
+        .catch(function () { status.textContent = "Não foi possível carregar."; });
+    }
+    loadComments();
 
     var form = el("form", { "class": "comment-form", autocomplete: "off" });
     var name = el("input", { type: "text", maxlength: "50", required: "required", placeholder: "Seu nome ou apelido", "aria-label": "Nome", "class": "para-panel-name" });
@@ -355,6 +360,7 @@
         store("lastComment", String(Date.now()));
         body.value = "";
         msg.textContent = "Comentário enviado!";
+        loadComments();
       }).catch(function () {
         msg.textContent = "Erro ao enviar. Tente novamente.";
       }).then(function () { btn.disabled = false; });
