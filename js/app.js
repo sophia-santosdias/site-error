@@ -248,6 +248,41 @@
     });
   }
 
+  function renderSpotify(title, inner) {
+    // título é a URL ou ID do Spotify (track, album, playlist, episode)
+    // inner pode ter uma linha de legenda opcional
+    var url = title.trim();
+    // aceita URL completa ou URI spotify:type:id
+    var embedUrl = "";
+    var m = url.match(/spotify\.com\/(track|album|playlist|episode|show)\/([A-Za-z0-9]+)/);
+    if (m) {
+      embedUrl = "https://open.spotify.com/embed/" + m[1] + "/" + m[2] + "?utm_source=generator&theme=0";
+    } else {
+      var uri = url.match(/spotify:(track|album|playlist|episode|show):([A-Za-z0-9]+)/);
+      if (uri) embedUrl = "https://open.spotify.com/embed/" + uri[1] + "/" + uri[2] + "?utm_source=generator&theme=0";
+    }
+    if (!embedUrl) return el("div"); // URL inválida, retorna vazio
+    var caption = inner.join(" ").trim();
+    // altura: track/episode = 152px, playlist/album = 352px
+    var isCompact = /\/(track|episode)\//.test(embedUrl);
+    var wrap = el("div", { "class": "spotify-wrap" });
+    var iframe = document.createElement("iframe");
+    iframe.style.borderRadius = "12px";
+    iframe.setAttribute("src", embedUrl);
+    iframe.setAttribute("width", "100%");
+    iframe.setAttribute("height", isCompact ? "152" : "352");
+    iframe.setAttribute("frameBorder", "0");
+    iframe.setAttribute("allowfullscreen", "");
+    iframe.setAttribute("allow", "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture");
+    iframe.setAttribute("loading", "lazy");
+    wrap.appendChild(iframe);
+    if (caption) {
+      var leg = el("p", { "class": "spotify-caption" }, caption);
+      wrap.appendChild(leg);
+    }
+    return wrap;
+  }
+
   function renderText(raw, chapterId) {
     resetParaCount();
     var box = el("div", { "class": "text" });
@@ -262,6 +297,7 @@
       var kind = m[1].toLowerCase(), title = m[2].trim();
       if (kind === "whatsapp") box.appendChild(wrapWithComment(renderWhatsapp(title, inner), chapterId));
       else if (kind === "tweet" || kind === "twitter") box.appendChild(wrapWithComment(renderTweet(title, inner), chapterId));
+      else if (kind === "spotify") box.appendChild(renderSpotify(title, inner));
       else renderParagraphs(box, inner, chapterId);
     }
     renderParagraphs(box, buf, chapterId);

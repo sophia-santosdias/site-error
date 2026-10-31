@@ -344,6 +344,16 @@ body[data-theme="dark"]   { --wa-bg:#0a0a14; --wa-head:#10101e; --wa-in:#14142a;
 .tw-stats { color: var(--muted); font-size: .82rem; display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
 .tw-stats strong { color: var(--text); }
 
+/* ---------- spotify ---------- */
+.spotify-wrap {
+  margin: 1.8em auto;
+  max-width: 440px;
+}
+.spotify-caption {
+  font-family: var(--mono); font-size: .78rem; color: var(--muted);
+  text-align: center; margin: .5em 0 0; letter-spacing: .03em;
+}
+
 /* ---------- personagens ---------- */
 .personagens-page { padding-bottom: 48px; }
 .personagens-titulo {
