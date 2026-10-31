@@ -227,8 +227,8 @@ a { color: var(--accent); }
   display: block;
   font-family: var(--mono); font-size: clamp(1.1rem, 3vw, 1.5rem);
   font-weight: 900; letter-spacing: .04em; text-transform: uppercase;
-  color: var(--code);
-  text-shadow: none;
+  color: var(--code) !important;
+  text-shadow: none !important;
 }
 
 .nav { display: flex; justify-content: space-between; gap: 8px; margin: 44px 0; }
