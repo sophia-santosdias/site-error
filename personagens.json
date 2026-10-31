@@ -1,0 +1,24 @@
+[
+  {
+    "nucleo": "Núcleo Ferette",
+    "personagens": [
+      {
+        "nome": "Lorena Ferette",
+        "foto": "img/personagens/apresentacao/lorena-ferette.png",
+        "descricao": [
+          "Programadora, quase nerd, Lorena tem 27 anos e é completamente fechada em seu mundo.",
+          "Filha caçula, lésbica e concisa nas demonstrações de afeto, tenta se adaptar ao mundo como pode, não por escolha completa, mas por necessidade."
+        ]
+      },
+      {
+        "nome": "Emília Ferette",
+        "apelido": "Mili",
+        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "descricao": [
+          "Filha mais velha. Designer de 29 anos, Mili tem paixão pelo mar e pelas ondas, mas atualmente se contenta em estar no seu lugar preferido apenas quando pode ir até o litoral mais próximo.",
+          "Precisou sair de Floripa para São Paulo — e carrega esse peso com ela."
+        ]
+      }
+    ]
+  }
+]

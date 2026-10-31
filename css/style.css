@@ -305,6 +305,67 @@ body[data-theme="dark"]   { --wa-bg:#0a0a14; --wa-head:#10101e; --wa-in:#14142a;
 .tw-stats { color: var(--muted); font-size: .82rem; display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
 .tw-stats strong { color: var(--text); }
 
+/* ---------- personagens ---------- */
+.personagens-page { padding-bottom: 48px; }
+.personagens-titulo {
+  font-family: var(--mono); font-size: clamp(1.4rem, 5vw, 2rem);
+  font-weight: 900; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--accent); margin: 0 0 32px;
+}
+.personagens-titulo::before { content: "// "; color: var(--muted); font-size: .6em; }
+
+.nucleo { margin-bottom: 48px; }
+.nucleo-nome {
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--code);
+  margin: 0 0 20px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+.nucleo-nome::before { content: "── "; opacity: .5; }
+.nucleo-nome::after  { content: " ──"; opacity: .5; }
+
+.char-card {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  min-height: 180px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--surface);
+  margin-bottom: 20px;
+}
+.char-foto-wrap {
+  position: relative; overflow: hidden;
+  background: #000;
+}
+.char-foto {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block; opacity: .85;
+  filter: contrast(1.05) saturate(.9);
+  transition: opacity .3s;
+}
+.char-card:hover .char-foto { opacity: 1; }
+
+.char-info {
+  padding: 20px 22px;
+  display: flex; flex-direction: column; justify-content: center; gap: 10px;
+  position: relative;
+}
+.char-nome {
+  font-family: var(--mono); font-size: clamp(1rem, 3vw, 1.4rem);
+  font-weight: 900; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--accent); margin: 0;
+  text-shadow: 1px 0 0 var(--code), -1px 0 0 rgba(255,107,90,.3);
+}
+.char-desc {
+  font-family: var(--serif); font-size: .92rem; line-height: 1.65;
+  color: var(--text); margin: 0; text-align: justify;
+}
+
+@media (max-width: 600px) {
+  .char-card { grid-template-columns: 1fr; }
+  .char-foto-wrap { height: 220px; }
+}
+
 /* ---------- telas pequenas ---------- */
 img, svg, video { max-width: 100%; height: auto; }
 

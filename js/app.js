@@ -374,6 +374,40 @@
     return document.createDocumentFragment(); // comentários agora são por parágrafo
   }
 
+  // ---------- personagens ----------
+  function personagensPage() {
+    document.title = "Personagens · " + cfg.title;
+    fetch("personagens.json")
+      .then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); })
+      .then(function (nucleos) {
+        var box = el("section", { "class": "personagens-page" });
+        box.appendChild(el("h1", { "class": "personagens-titulo" }, "Personagens"));
+        nucleos.forEach(function (nucleo) {
+          var sec = el("div", { "class": "nucleo" });
+          sec.appendChild(el("h2", { "class": "nucleo-nome" }, nucleo.nucleo));
+          nucleo.personagens.forEach(function (p) {
+            var card = el("div", { "class": "char-card" });
+            var fotoWrap = el("div", { "class": "char-foto-wrap" });
+            fotoWrap.appendChild(el("img", { src: p.foto, alt: p.nome, "class": "char-foto", loading: "lazy" }));
+            card.appendChild(fotoWrap);
+            var info = el("div", { "class": "char-info" });
+            info.appendChild(el("h3", { "class": "char-nome" }, p.nome));
+            p.descricao.forEach(function (par) {
+              info.appendChild(el("p", { "class": "char-desc" }, par));
+            });
+            card.appendChild(info);
+            sec.appendChild(card);
+          });
+          box.appendChild(sec);
+        });
+        view.replaceChildren(box);
+        window.scrollTo(0, 0);
+      })
+      .catch(function () {
+        view.replaceChildren(el("p", { "class": "notice" }, "Não foi possível carregar os personagens."));
+      });
+  }
+
   // ---------- páginas ----------
   function home() {
     document.title = cfg.title;
@@ -453,6 +487,7 @@
 
   // ---------- roteamento ----------
   function route() {
+    if (location.hash === "#/personagens") { personagensPage(); return; }
     var m = location.hash.match(/^#\/cap\/([\w-]+)$/);
     if (m) chapterPage(m[1]); else home();
   }
