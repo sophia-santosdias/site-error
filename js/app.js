@@ -350,7 +350,7 @@
       api("comments", {
         method: "POST",
         headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
-        body: JSON.stringify({ chapter_id: chapterId, paragraph_index: paraIdx, author: author, body: text, approved: true })
+        body: JSON.stringify({ chapter_id: chapterId, paragraph_index: paraIdx, author: author, body: text })
       }).then(function () {
         store("lastComment", String(Date.now()));
         body.value = "";
