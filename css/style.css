@@ -212,7 +212,7 @@ a { color: var(--accent); }
 .ponto-de-vista {
   margin: 2.4em 0 1.4em;
   padding: 14px 20px;
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--code);
   background: var(--surface);
   border-radius: 0 2px 2px 0;
 }
@@ -227,8 +227,8 @@ a { color: var(--accent); }
   display: block;
   font-family: var(--mono); font-size: clamp(1.1rem, 3vw, 1.5rem);
   font-weight: 900; letter-spacing: .04em; text-transform: uppercase;
-  color: var(--accent);
-  text-shadow: 1px 0 0 var(--code), -1px 0 0 rgba(255,107,90,.3);
+  color: var(--code);
+  text-shadow: none;
 }
 
 .nav { display: flex; justify-content: space-between; gap: 8px; margin: 44px 0; }
