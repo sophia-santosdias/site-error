@@ -409,6 +409,37 @@
             p.descricao.forEach(function (par) {
               info.appendChild(el("p", { "class": "char-desc" }, par));
             });
+            // mini-perfil do Twitter
+            if (p.twitter) {
+              var tw = p.twitter;
+              var perfil = el("div", { "class": "char-twitter" });
+              // banner
+              if (tw.banner) {
+                var banner = el("div", { "class": "char-tw-banner" });
+                banner.appendChild(el("img", { src: tw.banner, alt: "", loading: "lazy" }));
+                perfil.appendChild(banner);
+              }
+              // avatar + nome + handle
+              var twHead = el("div", { "class": "char-tw-head" });
+              var twAvatar = el("div", { "class": "char-tw-avatar" });
+              if (tw.avatar) twAvatar.appendChild(el("img", { src: tw.avatar, alt: p.nome, loading: "lazy" }));
+              twHead.appendChild(twAvatar);
+              var twMeta = el("div", { "class": "char-tw-meta" });
+              var twNome = el("div", { "class": "char-tw-nome" });
+              twNome.appendChild(document.createTextNode(p.nome));
+              if (tw.privada) twNome.appendChild(el("span", { "class": "char-tw-lock", "aria-label": "conta privada" }, " 🔒"));
+              twMeta.appendChild(twNome);
+              twMeta.appendChild(el("div", { "class": "char-tw-handle" }, tw.handle));
+              if (tw.bio) twMeta.appendChild(el("div", { "class": "char-tw-bio" }, tw.bio));
+              twHead.appendChild(twMeta);
+              perfil.appendChild(twHead);
+              // stats
+              var twStats = el("div", { "class": "char-tw-stats" });
+              twStats.appendChild(el("span", null, tw.seguindo + " Seguindo"));
+              twStats.appendChild(el("span", null, tw.seguidores + " Seguidores"));
+              perfil.appendChild(twStats);
+              info.appendChild(perfil);
+            }
             card.appendChild(info);
             sec.appendChild(card);
           });

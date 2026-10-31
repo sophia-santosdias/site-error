@@ -399,6 +399,43 @@ body[data-theme="dark"]   { --wa-bg:#0a0a14; --wa-head:#10101e; --wa-in:#14142a;
   color: var(--text); margin: 0; text-align: justify;
 }
 
+/* mini-perfil twitter no card de personagem */
+.char-twitter {
+  margin-top: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+}
+.char-tw-banner { height: 80px; overflow: hidden; background: var(--border); }
+.char-tw-banner img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: .9; }
+.char-tw-head {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 10px 14px 0;
+  margin-top: -28px;
+}
+.char-tw-avatar {
+  width: 52px; height: 52px; flex: none;
+  border-radius: 50%; overflow: hidden;
+  border: 3px solid var(--bg);
+  background: var(--border);
+}
+.char-tw-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.char-tw-meta { padding-top: 28px; min-width: 0; flex: 1; }
+.char-tw-nome {
+  font-weight: 700; font-size: .95rem; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.char-tw-handle { color: var(--muted); font-size: .85rem; margin-top: 1px; }
+.char-tw-bio { color: var(--text); font-size: .88rem; margin-top: 8px; line-height: 1.5; padding: 0 14px; }
+.char-tw-stats {
+  display: flex; gap: 16px; padding: 10px 14px 12px;
+  font-size: .85rem; color: var(--muted);
+}
+.char-tw-stats span strong { color: var(--text); }
+
 @media (max-width: 600px) {
   .char-card { grid-template-columns: 1fr; }
   .char-foto-wrap { height: 220px; }
