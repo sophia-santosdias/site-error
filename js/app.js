@@ -420,6 +420,87 @@
     return panel;
   }
 
+  // ---------- reações por capítulo ----------
+  var REACTIONS = ["💔", "😭", "👀", "🔥", "🥺"];
+
+  function reactionsEnabled() { return commentsEnabled(); }
+
+  function loadedReactions(chapterId, btns, counts) {
+    btns.forEach(function (btn) {
+      var emoji = btn.dataset.emoji;
+      var n = counts[emoji] || 0;
+      btn.querySelector(".rx-count").textContent = n > 0 ? (n >= 1000 ? (n / 1000).toFixed(1) + "k" : n) : "";
+    });
+  }
+
+  function renderReactions(chapter) {
+    if (!reactionsEnabled()) return document.createDocumentFragment();
+
+    var wrap = el("div", { "class": "reactions-wrap" });
+    wrap.appendChild(el("p", { "class": "reactions-label" }, "O que você achou?"));
+    var bar = el("div", { "class": "reactions-bar" });
+
+    var voted = store("rx_" + chapter.id); // emoji já votado neste capítulo
+
+    var btns = REACTIONS.map(function (emoji) {
+      var btn = el("button", {
+        "class": "rx-btn" + (voted === emoji ? " rx-active" : ""),
+        "data-emoji": emoji,
+        "aria-label": "Reagir com " + emoji,
+        "type": "button"
+      });
+      btn.appendChild(document.createTextNode(emoji));
+      var cnt = el("span", { "class": "rx-count" });
+      btn.appendChild(cnt);
+      bar.appendChild(btn);
+      return btn;
+    });
+
+    wrap.appendChild(bar);
+
+    // carrega contagens
+    function fetchCounts() {
+      api("reactions?chapter_id=eq." + encodeURIComponent(chapter.id) + "&select=emoji,count&group=emoji")
+        .then(function (r) { return r.json(); })
+        .then(function (rows) {
+          var map = {};
+          rows.forEach(function (row) { map[row.emoji] = parseInt(row.count, 10); });
+          loadedReactions(chapter.id, btns, map);
+        })
+        .catch(function () {}); // silencioso — contagens não são críticas
+    }
+
+    // clique numa reação
+    btns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var emoji = btn.dataset.emoji;
+        var prev = store("rx_" + chapter.id);
+
+        // já votou no mesmo: desfaz localmente, não remove do servidor (sem DELETE por segurança)
+        if (prev === emoji) {
+          store("rx_" + chapter.id, "");
+          btns.forEach(function (b) { b.classList.remove("rx-active"); });
+          return;
+        }
+
+        // marca como votado localmente
+        store("rx_" + chapter.id, emoji);
+        btns.forEach(function (b) { b.classList.toggle("rx-active", b.dataset.emoji === emoji); });
+
+        api("reactions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
+          body: JSON.stringify({ chapter_id: chapter.id, emoji: emoji })
+        }).then(function () {
+          fetchCounts();
+        }).catch(function () {});
+      });
+    });
+
+    fetchCounts();
+    return wrap;
+  }
+
   function renderComments(chapter) {
     return document.createDocumentFragment(); // comentários agora são por parágrafo
   }
@@ -554,6 +635,8 @@
         art.appendChild(el("h1", null, c.title));
         art.appendChild(el("div", { "class": "meta" }, "Capítulo " + (idx + 1) + " de " + chapters.length));
         art.appendChild(renderText(raw, c.id));
+
+        art.appendChild(renderReactions(c));
 
         var nav = el("nav", { "class": "nav" });
         nav.appendChild(navLink("← Anterior", chapters[idx - 1]));

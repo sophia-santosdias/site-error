@@ -344,6 +344,35 @@ body[data-theme="dark"]   { --wa-bg:#0a0a14; --wa-head:#10101e; --wa-in:#14142a;
 .tw-stats { color: var(--muted); font-size: .82rem; display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
 .tw-stats strong { color: var(--text); }
 
+/* ---------- reações ---------- */
+.reactions-wrap {
+  margin: 2em 0 .5em;
+  text-align: center;
+}
+.reactions-label {
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .15em;
+  text-transform: uppercase; color: var(--muted); margin: 0 0 .8em;
+}
+.reactions-bar {
+  display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+}
+.rx-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface); cursor: pointer;
+  font-size: 1.15rem; line-height: 1;
+  color: var(--text);
+  transition: border-color .15s, background .15s, transform .1s;
+  user-select: none;
+}
+.rx-btn:hover { border-color: var(--accent); background: var(--bg); transform: scale(1.08); }
+.rx-btn.rx-active { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 2px var(--accent); }
+.rx-count {
+  font-family: var(--mono); font-size: .72rem; color: var(--muted); min-width: 0;
+}
+.rx-btn.rx-active .rx-count { color: var(--accent); }
+
 /* ---------- spotify ---------- */
 .spotify-wrap {
   margin: 1.8em auto;

@@ -37,3 +37,31 @@ create policy "enviar comentarios"
   with check (true);
 
 -- Para remover um comentário: apague a linha no Table Editor.
+
+-- ============================================================
+-- REAÇÕES POR CAPÍTULO
+-- ============================================================
+create table if not exists public.reactions (
+  id         bigint generated always as identity primary key,
+  chapter_id text        not null check (chapter_id ~ '^[A-Za-z0-9_-]{1,20}$'),
+  emoji      text        not null check (emoji in ('💔','😭','👀','🔥','🥺')),
+  created_at timestamptz not null default now()
+);
+
+create index if not exists reactions_chapter_idx on public.reactions (chapter_id, emoji);
+
+alter table public.reactions enable row level security;
+
+revoke all on public.reactions from anon, authenticated;
+grant select on public.reactions to anon;
+grant insert (chapter_id, emoji) on public.reactions to anon;
+
+drop policy if exists "ler reacoes" on public.reactions;
+create policy "ler reacoes"
+  on public.reactions for select to anon
+  using (true);
+
+drop policy if exists "enviar reacao" on public.reactions;
+create policy "enviar reacao"
+  on public.reactions for insert to anon
+  with check (true);
