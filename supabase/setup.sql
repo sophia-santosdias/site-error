@@ -65,3 +65,30 @@ drop policy if exists "enviar reacao" on public.reactions;
 create policy "enviar reacao"
   on public.reactions for insert to anon
   with check (true);
+
+-- ============================================================
+-- VISUALIZAÇÕES POR CAPÍTULO
+-- ============================================================
+create table if not exists public.views (
+  id         bigint generated always as identity primary key,
+  chapter_id text        not null check (chapter_id ~ '^[A-Za-z0-9_-]{1,20}$'),
+  created_at timestamptz not null default now()
+);
+
+create index if not exists views_chapter_idx on public.views (chapter_id);
+
+alter table public.views enable row level security;
+
+revoke all on public.views from anon, authenticated;
+grant select on public.views to anon;
+grant insert (chapter_id) on public.views to anon;
+
+drop policy if exists "ler views" on public.views;
+create policy "ler views"
+  on public.views for select to anon
+  using (true);
+
+drop policy if exists "registrar view" on public.views;
+create policy "registrar view"
+  on public.views for insert to anon
+  with check (true);

@@ -298,6 +298,10 @@
       if (kind === "whatsapp") box.appendChild(wrapWithComment(renderWhatsapp(title, inner), chapterId));
       else if (kind === "tweet" || kind === "twitter") box.appendChild(wrapWithComment(renderTweet(title, inner), chapterId));
       else if (kind === "spotify") box.appendChild(renderSpotify(title, inner));
+      else if (kind === "nota") {
+        var note = renderAuthorNote(inner);
+        if (note) box.appendChild(note);
+      }
       else renderParagraphs(box, inner, chapterId);
     }
     renderParagraphs(box, buf, chapterId);
@@ -505,6 +509,74 @@
     return document.createDocumentFragment(); // comentários agora são por parágrafo
   }
 
+  // ---------- nota da autora ----------
+  function renderAuthorNote(lines) {
+    if (!lines.length) return null;
+    var author = (cfg.author) || {};
+    var name = author.name || "Autora";
+    var avatar = author.avatar || "";
+
+    var wrap = el("details", { "class": "author-note" });
+    var summary = el("summary", { "class": "author-note-header" });
+
+    // avatar: foto ou inicial
+    var avEl;
+    if (avatar) {
+      avEl = el("img", { src: avatar, alt: name, "class": "author-note-avatar" });
+    } else {
+      avEl = el("span", { "class": "author-note-avatar author-note-initial" }, name.charAt(0).toUpperCase());
+    }
+    summary.appendChild(avEl);
+
+    var label = el("span", { "class": "author-note-label" });
+    label.appendChild(el("span", { "class": "author-note-name" }, name));
+    label.appendChild(el("span", { "class": "author-note-sub" }, "Nota da autora"));
+    summary.appendChild(label);
+
+    summary.appendChild(el("span", { "class": "author-note-chevron" }, "▾"));
+    wrap.appendChild(summary);
+
+    var body = el("div", { "class": "author-note-body" });
+    // agrupa linhas em parágrafos (separa por linha em branco)
+    lines.join("\n").split(/\n{2,}/).forEach(function (par) {
+      par = par.trim();
+      if (par) body.appendChild(el("p", null, par.replace(/\n/g, " ")));
+    });
+    wrap.appendChild(body);
+    return wrap;
+  }
+
+  // ---------- visualizações por capítulo ----------
+  function trackView(chapterId, viewEl) {
+    if (!commentsEnabled()) return;
+
+    // mostra contagem
+    function showCount(n) {
+      if (n > 0) {
+        viewEl.textContent = " · " + (n >= 1000 ? (n / 1000).toFixed(1) + "k" : n) + " leituras";
+      }
+    }
+
+    // busca contagem atual
+    api("views?chapter_id=eq." + encodeURIComponent(chapterId) + "&select=id")
+      .then(function (r) { return r.json(); })
+      .then(function (rows) { showCount(rows.length + 1); }) // +1 pela visita atual
+      .catch(function () {});
+
+    // registra visita (sem await — dispara e esquece)
+    api("views", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
+      body: JSON.stringify({ chapter_id: chapterId })
+    }).then(function () {
+      // após registrar, busca contagem atualizada
+      api("views?chapter_id=eq." + encodeURIComponent(chapterId) + "&select=id")
+        .then(function (r) { return r.json(); })
+        .then(function (rows) { showCount(rows.length); })
+        .catch(function () {});
+    }).catch(function () {});
+  }
+
   // ---------- personagens ----------
   function personagensPage() {
     document.title = "Personagens · " + cfg.title;
@@ -633,8 +705,13 @@
       .then(function (raw) {
         var art = el("article", { "class": "chapter" });
         art.appendChild(el("h1", null, c.title));
-        art.appendChild(el("div", { "class": "meta" }, "Capítulo " + (idx + 1) + " de " + chapters.length));
+        var metaEl = el("div", { "class": "meta" });
+        metaEl.appendChild(document.createTextNode("Capítulo " + (idx + 1) + " de " + chapters.length));
+        var viewsEl = el("span", { "class": "meta-views" });
+        metaEl.appendChild(viewsEl);
+        art.appendChild(metaEl);
         art.appendChild(renderText(raw, c.id));
+        trackView(c.id, viewsEl);
 
         art.appendChild(renderReactions(c));
 

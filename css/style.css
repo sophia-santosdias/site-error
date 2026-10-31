@@ -173,6 +173,7 @@ a { color: var(--accent); }
   border-bottom: 1px solid var(--border);
 }
 .chapter .meta::before { content: "// "; color: var(--muted); }
+.meta-views { opacity: .75; }
 .chapter .text { font-size: var(--fs); }
 .chapter .text p { margin: 0 0 1.15em; hyphens: auto; }
 .chapter .text .para-wrap:first-child > p::first-letter {
@@ -372,6 +373,48 @@ body[data-theme="dark"]   { --wa-bg:#0a0a14; --wa-head:#10101e; --wa-in:#14142a;
   font-family: var(--mono); font-size: .72rem; color: var(--muted); min-width: 0;
 }
 .rx-btn.rx-active .rx-count { color: var(--accent); }
+
+/* ---------- nota da autora ---------- */
+.author-note {
+  margin: 2.4em 0 1em;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.author-note-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; cursor: pointer;
+  list-style: none; /* remove seta padrão do <summary> */
+  user-select: none;
+}
+.author-note-header::-webkit-details-marker { display: none; }
+.author-note-header:hover { background: var(--bg); }
+.author-note-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  object-fit: cover; flex: none;
+}
+.author-note-initial {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--accent); color: var(--on-accent);
+  font-family: var(--mono); font-weight: 700; font-size: .95rem;
+}
+.author-note-label { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
+.author-note-name  { font-family: var(--mono); font-size: .88rem; font-weight: 700; color: var(--text); }
+.author-note-sub   { font-family: var(--mono); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.author-note-chevron {
+  color: var(--muted); font-size: .8rem; transition: transform .2s; flex: none;
+}
+details[open] .author-note-chevron { transform: rotate(180deg); }
+.author-note-body {
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--border);
+}
+.author-note-body p {
+  font-family: var(--serif); font-size: .93rem; line-height: 1.7;
+  color: var(--text); margin: .9em 0 0;
+}
+.author-note-body p:first-child { margin-top: .8em; }
 
 /* ---------- spotify ---------- */
 .spotify-wrap {

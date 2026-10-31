@@ -10,6 +10,12 @@ window.SITE_CONFIG = {
     "Tudo, exceto a verdade."
   ],
 
+  // Nome e avatar da autora (aparecem nas notas de autoria nos capítulos)
+  author: {
+    name: "Sophia",      // seu nome / apelido
+    avatar: ""           // caminho para uma foto (ex: "img/autora.jpg") — deixe "" para usar inicial
+  },
+
   // Comentários via Supabase (passo a passo no README.md).
   // Enquanto url e anonKey estiverem vazios, a seção de comentários não aparece no site.
   // A chave "anon/publishable" é PÚBLICA por design: a proteção vem das regras do banco (supabase/setup.sql).
