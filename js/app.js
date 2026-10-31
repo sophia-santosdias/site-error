@@ -460,11 +460,11 @@
 
     // carrega contagens
     function fetchCounts() {
-      api("reactions?chapter_id=eq." + encodeURIComponent(chapter.id) + "&select=emoji,count&group=emoji")
+      api("reactions?chapter_id=eq." + encodeURIComponent(chapter.id) + "&select=emoji")
         .then(function (r) { return r.json(); })
         .then(function (rows) {
           var map = {};
-          rows.forEach(function (row) { map[row.emoji] = parseInt(row.count, 10); });
+          rows.forEach(function (row) { map[row.emoji] = (map[row.emoji] || 0) + 1; });
           loadedReactions(chapter.id, btns, map);
         })
         .catch(function () {}); // silencioso — contagens não são críticas
