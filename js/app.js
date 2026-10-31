@@ -646,18 +646,113 @@
     document.title = cfg.title;
     var box = el("section", { "class": "home" });
     box.appendChild(el("h1", null, cfg.title));
-    // subtítulo: suporta <s> para texto riscado via marcação ~texto~
+    // subtítulo com efeito de digitação
     var subEl = el("p", { "class": "sub" });
+    box.appendChild(subEl);
     if (cfg.subtitle) {
+      // parse: converte ~texto~ em segmentos marcados
+      var segments = [];
       cfg.subtitle.split(/(~[^~]+~)/).forEach(function (part) {
+        if (!part) return;
         if (part.charAt(0) === "~" && part.length > 2) {
-          subEl.appendChild(el("s", null, part.slice(1, -1)));
-        } else if (part) {
-          subEl.appendChild(document.createTextNode(part));
+          segments.push({ text: part.slice(1, -1), strike: true });
+        } else {
+          segments.push({ text: part, strike: false });
         }
       });
+
+      // constrói a sequência de "quadros" do efeito:
+      // 1) digita tudo sem risco
+      // 2) apaga o trecho que vai ficar riscado
+      // 3) redigita com risco
+      var plainFull = segments.map(function (s) { return s.text; }).join("");
+      var strikeSegs = segments.filter(function (s) { return s.strike; });
+      var strikeText = strikeSegs.length ? strikeSegs[0].text : "";
+      var strikeStart = strikeSegs.length ? plainFull.indexOf(strikeText) : -1;
+
+      // nó de texto antes do risco, <s>, nó de texto depois
+      var beforeNode = document.createTextNode("");
+      var strikeNode = el("s");
+      var strikeInner = document.createTextNode("");
+      strikeNode.appendChild(strikeInner);
+      var afterNode  = document.createTextNode("");
+      var cursor     = el("span", { "class": "type-cursor" }, "|");
+
+      subEl.appendChild(beforeNode);
+      subEl.appendChild(strikeNode);
+      subEl.appendChild(afterNode);
+      subEl.appendChild(cursor);
+
+      var PREFIX  = strikeStart >= 0 ? plainFull.slice(0, strikeStart) : plainFull;
+      var STRIKE  = strikeText;
+      var SUFFIX  = strikeStart >= 0 ? plainFull.slice(strikeStart + strikeText.length) : "";
+      var SPEED   = 55;   // ms por caractere digitando
+      var DEL     = 35;   // ms por caractere apagando
+      var PAUSE   = 600;  // ms de pausa antes de apagar/redigitar
+
+      function phase1(i) {
+        // digita tudo plain
+        if (i <= plainFull.length) {
+          var cur = plainFull.slice(0, i);
+          if (strikeStart >= 0 && i > strikeStart) {
+            beforeNode.nodeValue = cur.slice(0, strikeStart);
+            strikeInner.nodeValue = cur.slice(strikeStart);
+          } else {
+            beforeNode.nodeValue = cur;
+            strikeInner.nodeValue = "";
+          }
+          setTimeout(function () { phase1(i + 1); }, SPEED);
+        } else {
+          // pausa antes de apagar o trecho riscado
+          if (STRIKE) setTimeout(phase2, PAUSE);
+          else cursor.classList.add("type-done");
+        }
+      }
+
+      function phase2() {
+        // apaga o trecho riscado (dentro do <s>) letra por letra
+        var cur = STRIKE;
+        function del() {
+          if (cur.length > 0) {
+            cur = cur.slice(0, -1);
+            strikeInner.nodeValue = cur;
+            setTimeout(del, DEL);
+          } else {
+            setTimeout(phase3, PAUSE);
+          }
+        }
+        del();
+      }
+
+      function phase3() {
+        // redigita o trecho dentro do <s> com risco visual já aplicado
+        var i = 0;
+        function type() {
+          if (i <= STRIKE.length) {
+            strikeInner.nodeValue = STRIKE.slice(0, i);
+            i++;
+            setTimeout(type, SPEED);
+          } else {
+            // digita o sufixo depois do risco
+            afterNode.nodeValue = "";
+            phase4(0);
+          }
+        }
+        type();
+      }
+
+      function phase4(i) {
+        if (i <= SUFFIX.length) {
+          afterNode.nodeValue = SUFFIX.slice(0, i);
+          setTimeout(function () { phase4(i + 1); }, SPEED);
+        } else {
+          cursor.classList.add("type-done");
+        }
+      }
+
+      // pequeno delay inicial para o leitor ver a página antes do efeito
+      setTimeout(function () { phase1(0); }, 300);
     }
-    box.appendChild(subEl);
 
     if (cfg.sinopse && cfg.sinopse.length) {
       var sinopseEl = el("div", { "class": "sinopse" });
