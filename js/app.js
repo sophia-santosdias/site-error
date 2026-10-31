@@ -312,7 +312,7 @@
   var fs = parseInt(store("fs"), 10) || 19;
   function applyFont() { document.documentElement.style.setProperty("--fs", fs + "px"); }
   function applyTheme(t) {
-    if (["light", "claro", "dark"].indexOf(t) === -1) t = "light";
+    if (["light", "claro", "acessivel", "terminal", "dark"].indexOf(t) === -1) t = "light";
     document.body.setAttribute("data-theme", t);
     document.getElementById("theme").value = t;
     store("theme", t);
@@ -830,7 +830,7 @@
 
   var mbTheme = document.getElementById("mb-theme-toggle");
   var mbThemeIcon = document.getElementById("mb-theme-icon");
-  var themes = ["light", "claro", "dark"];
+  var themes = ["light", "claro", "acessivel", "terminal", "dark"];
   if (mbTheme) {
     mbTheme.addEventListener("click", function (e) {
       e.preventDefault();
