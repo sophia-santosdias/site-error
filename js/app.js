@@ -690,32 +690,25 @@
       var DEL     = 35;   // ms por caractere apagando
       var PAUSE   = 600;  // ms de pausa antes de apagar/redigitar
 
+      // fase 1: digita PREFIX + STRIKE em beforeNode (sem risco ainda)
       function phase1(i) {
-        // digita tudo plain
-        if (i <= plainFull.length) {
-          var cur = plainFull.slice(0, i);
-          if (strikeStart >= 0 && i > strikeStart) {
-            beforeNode.nodeValue = cur.slice(0, strikeStart);
-            strikeInner.nodeValue = cur.slice(strikeStart);
-          } else {
-            beforeNode.nodeValue = cur;
-            strikeInner.nodeValue = "";
-          }
+        var full = PREFIX + STRIKE;
+        if (i <= full.length) {
+          beforeNode.nodeValue = full.slice(0, i);
           setTimeout(function () { phase1(i + 1); }, SPEED);
         } else {
-          // pausa antes de apagar o trecho riscado
           if (STRIKE) setTimeout(phase2, PAUSE);
-          else cursor.classList.add("type-done");
+          else phase4(0);
         }
       }
 
+      // fase 2: apaga só a parte STRIKE de beforeNode
       function phase2() {
-        // apaga o trecho riscado (dentro do <s>) letra por letra
         var cur = STRIKE;
         function del() {
           if (cur.length > 0) {
             cur = cur.slice(0, -1);
-            strikeInner.nodeValue = cur;
+            beforeNode.nodeValue = PREFIX + cur;
             setTimeout(del, DEL);
           } else {
             setTimeout(phase3, PAUSE);
@@ -724,8 +717,8 @@
         del();
       }
 
+      // fase 3: redigita STRIKE dentro do <s> (agora riscado)
       function phase3() {
-        // redigita o trecho dentro do <s> com risco visual já aplicado
         var i = 0;
         function type() {
           if (i <= STRIKE.length) {
@@ -733,14 +726,13 @@
             i++;
             setTimeout(type, SPEED);
           } else {
-            // digita o sufixo depois do risco
-            afterNode.nodeValue = "";
             phase4(0);
           }
         }
         type();
       }
 
+      // fase 4: digita SUFFIX em afterNode
       function phase4(i) {
         if (i <= SUFFIX.length) {
           afterNode.nodeValue = SUFFIX.slice(0, i);
@@ -750,7 +742,6 @@
         }
       }
 
-      // pequeno delay inicial para o leitor ver a página antes do efeito
       setTimeout(function () { phase1(0); }, 300);
     }
 
