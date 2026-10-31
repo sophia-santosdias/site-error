@@ -32,6 +32,8 @@ jobs:
         run: |
           printf '// Gerado automaticamente pelo GitHub Actions.\nwindow.SITE_CONFIG.subtitle = "~PAGE~ PHOTO NOT FOUND";\nwindow.SITE_CONFIG.comments = { url: "%s", anonKey: "%s" };\n' \
             "$SUPABASE_URL" "$SUPABASE_ANON_KEY" > js/config.local.js
+          BUILD_HASH=$(git rev-parse --short HEAD)
+          sed -i "s/v=BUILD/v=${BUILD_HASH}/g" index.html
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
