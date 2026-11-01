@@ -1,6 +1,9 @@
 (function () {
   "use strict";
 
+  var BUILD_VER = window.BUILD_VER || "";
+  var _bv = BUILD_VER ? "?v=" + BUILD_VER : "";
+
   var cfg = window.SITE_CONFIG;
   var view = document.getElementById("view");
   var progress = document.getElementById("progress");
@@ -568,7 +571,7 @@
   // ---------- personagens ----------
   function personagensPage() {
     document.title = "Personagens · " + cfg.title;
-    fetch("personagens.json")
+    fetch("personagens.json" + _bv)
       .then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); })
       .then(function (nucleos) {
         var box = el("section", { "class": "personagens-page" });
@@ -774,7 +777,7 @@
     document.title = c.title + " · " + cfg.title;
     store("last", c.id);
 
-    fetch("chapters/" + encodeURIComponent(c.file))
+    fetch("chapters/" + encodeURIComponent(c.file) + _bv)
       .then(function (r) { if (!r.ok) throw new Error("http"); return r.text(); })
       .then(function (raw) {
         var art = el("article", { "class": "chapter" });
@@ -860,7 +863,7 @@
 
   document.getElementById("brand").textContent = cfg.title;
 
-  fetch("chapters/chapters.json")
+  fetch("chapters/chapters.json" + _bv)
     .then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); })
     .then(function (list) { chapters = list; route(); })
     .catch(function () {

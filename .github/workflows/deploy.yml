@@ -34,6 +34,7 @@ jobs:
             "$SUPABASE_URL" "$SUPABASE_ANON_KEY" > js/config.local.js
           BUILD_HASH=$(git rev-parse --short HEAD)
           sed -i "s/v=BUILD/v=${BUILD_HASH}/g" index.html
+          printf '\nwindow.BUILD_VER = "%s";\n' "$BUILD_HASH" >> js/config.local.js
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
