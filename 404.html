@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>404 · ERROR 404</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .e404-wrap {
+      min-height: 80vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; gap: 20px;
+      padding: 40px 24px;
+    }
+    .e404-code {
+      font-family: var(--mono);
+      font-size: clamp(5rem, 20vw, 10rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--accent);
+      letter-spacing: -.02em;
+      position: relative;
+      user-select: none;
+    }
+    .e404-code::before {
+      content: "404";
+      position: absolute; inset: 0;
+      color: var(--code);
+      clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+      transform: translateX(4px);
+      opacity: .7;
+    }
+    .e404-code::after {
+      content: "404";
+      position: absolute; inset: 0;
+      color: #ff4444;
+      clip-path: polygon(0 55%, 100% 55%, 100% 70%, 0 70%);
+      transform: translateX(-3px);
+      opacity: .5;
+    }
+    .e404-label {
+      font-family: var(--mono); font-size: .75rem;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--code); margin: 0;
+    }
+    .e404-msg {
+      font-family: var(--serif); font-size: clamp(1rem, 3vw, 1.25rem);
+      color: var(--text); line-height: 1.7; max-width: 420px; margin: 0;
+    }
+    .e404-msg em { color: var(--accent); font-style: italic; }
+    .e404-sub {
+      font-family: var(--mono); font-size: .8rem;
+      color: var(--muted); margin: 0;
+    }
+    .e404-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+    @keyframes glitch-bar {
+      0%, 90%, 100% { clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); transform: translateX(4px); }
+      92% { clip-path: polygon(0 10%, 100% 10%, 100% 35%, 0 35%); transform: translateX(6px); }
+      94% { clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); transform: translateX(-5px); }
+      96% { clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); transform: translateX(2px); }
+    }
+    .e404-code::before { animation: glitch-bar 4s steps(1) infinite; }
+  </style>
+</head>
+<body data-theme="light">
+
+  <header class="topbar">
+    <a class="brand" href="/">ERROR 404</a>
+  </header>
+
+  <main class="container">
+    <div class="e404-wrap">
+      <p class="e404-label">// página não encontrada</p>
+
+      <div class="e404-code" aria-label="404">404</div>
+
+      <p class="e404-msg">
+        <em>PAGE AND PHOTO NOT FOUND</em>
+      </p>
+
+      <p class="e404-sub">
+        O link pode estar errado ou a página foi removida.
+      </p>
+
+      <div class="e404-actions">
+        <a class="btn primary" href="/">← Voltar para o início</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // aplica o tema salvo pelo leitor
+    try {
+      var t = localStorage.getItem("theme");
+      var valid = ["light","dark","claro","acessivel"];
+      if (t && valid.indexOf(t) !== -1) document.body.setAttribute("data-theme", t);
+    } catch(e) {}
+  </script>
+</body>
+</html>
