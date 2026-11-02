@@ -641,14 +641,16 @@ img, svg, video { max-width: 100%; height: auto; }
    INTRO OVERLAY — tela de erro → site
    ══════════════════════════════════════════════ */
 #intro-overlay {
-  position: fixed; inset: 0; z-index: 9999;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9999;
   background: #0d0d0d;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   gap: 18px;
   cursor: pointer;
-  /* fade-out ao sair */
   transition: opacity .6s ease;
+  animation: intro-flicker .7s steps(1) forwards;
 }
 #intro-overlay.intro-out {
   opacity: 0;
@@ -661,7 +663,8 @@ img, svg, video { max-width: 100%; height: auto; }
 /* scanlines por cima de tudo */
 #intro-overlay::before {
   content: "";
-  position: absolute; inset: 0;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
   background: repeating-linear-gradient(
     to bottom,
     transparent 0px, transparent 3px,
@@ -682,7 +685,6 @@ img, svg, video { max-width: 100%; height: auto; }
   22%  { opacity: 1; }
   100% { opacity: 1; }
 }
-#intro-overlay { animation: intro-flicker .7s steps(1) forwards; }
 
 /* glitch intenso antes de sair */
 @keyframes intro-glitch-exit {
