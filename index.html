@@ -10,6 +10,16 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-theme="light">
+
+  <!-- ── INTRO OVERLAY (erro 404 → site) ─────────────────────────────── -->
+  <div id="intro-overlay" aria-hidden="true">
+    <p class="intro-label">// página não encontrada</p>
+    <div class="intro-code">404</div>
+    <p class="intro-msg">PAGE AND PHOTO NOT FOUND</p>
+    <p class="intro-skip">pressione qualquer tecla para continuar</p>
+  </div>
+  <!-- ──────────────────────────────────────────────────────────────────── -->
+
   <div id="progress" aria-hidden="true"></div>
 
   <header class="topbar">
@@ -50,5 +60,47 @@
   <!-- config.local.js é ignorado pelo git; use-o para chaves locais/produção -->
   <script src="js/config.local.js?v=BUILD" onerror="void 0"></script>
   <script src="js/app.js?v=BUILD"></script>
+
+  <script>
+  /* ── Intro overlay: tela de erro 404 → site ─────────────────────── */
+  (function () {
+    var overlay = document.getElementById('intro-overlay');
+    if (!overlay) return;
+
+    // aplica tema salvo antes de qualquer coisa
+    try {
+      var t = localStorage.getItem('theme');
+      if (t && ['light','dark','claro','acessivel','terminal'].indexOf(t) !== -1)
+        document.body.setAttribute('data-theme', t);
+    } catch(e) {}
+
+    // trava scroll do site enquanto a intro está ativa
+    document.body.style.overflow = 'hidden';
+
+    var dismissed = false;
+    function dismiss() {
+      if (dismissed) return;
+      dismissed = true;
+      // fase 1: glitch rápido
+      overlay.classList.add('intro-glitch');
+      // fase 2: depois do glitch, fade + remove
+      setTimeout(function () {
+        overlay.classList.add('intro-out');
+        document.body.style.overflow = '';
+        overlay.addEventListener('transitionend', function () {
+          overlay.classList.add('intro-gone');
+        }, { once: true });
+      }, 500);
+    }
+
+    // auto-dismiss após 3.8s se o usuário não interagir
+    var autoTimer = setTimeout(dismiss, 3800);
+
+    // clique, toque ou qualquer tecla dispensa a intro
+    overlay.addEventListener('click', function () { clearTimeout(autoTimer); dismiss(); });
+    document.addEventListener('keydown', function () { clearTimeout(autoTimer); dismiss(); }, { once: true });
+    document.addEventListener('touchstart', function () { clearTimeout(autoTimer); dismiss(); }, { once: true, passive: true });
+  })();
+  </script>
 </body>
 </html>

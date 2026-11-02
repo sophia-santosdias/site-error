@@ -636,3 +636,137 @@ img, svg, video { max-width: 100%; height: auto; }
 @media (min-width: 521px) {
   .mobile-bar { display: none; }
 }
+
+/* ══════════════════════════════════════════════
+   INTRO OVERLAY — tela de erro → site
+   ══════════════════════════════════════════════ */
+#intro-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #0d0d0d;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 18px;
+  cursor: pointer;
+  /* fade-out ao sair */
+  transition: opacity .6s ease;
+}
+#intro-overlay.intro-out {
+  opacity: 0;
+  pointer-events: none;
+}
+#intro-overlay.intro-gone {
+  display: none;
+}
+
+/* scanlines por cima de tudo */
+#intro-overlay::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 3px,
+    rgba(0,0,0,.18) 3px, rgba(0,0,0,.18) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* flash de glitch na entrada */
+@keyframes intro-flicker {
+  0%   { opacity: 0; }
+  5%   { opacity: 1; }
+  6%   { opacity: 0; }
+  7%   { opacity: 1; }
+  20%  { opacity: 1; }
+  21%  { opacity: .6; }
+  22%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+#intro-overlay { animation: intro-flicker .7s steps(1) forwards; }
+
+/* glitch intenso antes de sair */
+@keyframes intro-glitch-exit {
+  0%   { transform: none; filter: none; }
+  15%  { transform: translate(-6px, 2px) skewX(-3deg); filter: hue-rotate(60deg) brightness(1.6); }
+  30%  { transform: translate(8px, -3px) skewX(2deg);  filter: hue-rotate(-40deg) brightness(.4); }
+  45%  { transform: translate(-4px, 4px) skewX(1deg);  filter: hue-rotate(90deg) brightness(2); }
+  60%  { transform: translate(5px, -2px) skewX(-2deg); filter: hue-rotate(-20deg); }
+  75%  { transform: translate(-2px, 3px) skewX(1deg);  filter: brightness(1.8); }
+  90%  { transform: translate(3px, -1px); filter: none; }
+  100% { transform: none; opacity: 0; }
+}
+#intro-overlay.intro-glitch {
+  animation: intro-glitch-exit .55s steps(1) forwards;
+}
+
+/* ---- conteúdo do overlay ---- */
+.intro-label {
+  font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
+  font-size: .72rem; letter-spacing: .22em; text-transform: uppercase;
+  color: #4a7c4a; margin: 0;
+  position: relative; z-index: 2;
+  opacity: 0; animation: intro-text-in .4s ease .5s forwards;
+}
+.intro-code {
+  font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
+  font-size: clamp(5.5rem, 22vw, 11rem);
+  font-weight: 900; line-height: 1;
+  color: #e8700a;
+  letter-spacing: -.02em;
+  position: relative; z-index: 2;
+  user-select: none;
+  opacity: 0; animation: intro-text-in .3s ease .2s forwards;
+}
+/* glitch duplo no número */
+.intro-code::before {
+  content: "404";
+  position: absolute; inset: 0;
+  color: #4a7c4a;
+  clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+  transform: translateX(4px);
+  opacity: .7;
+  animation: glitch-bar 3.5s steps(1) infinite;
+}
+.intro-code::after {
+  content: "404";
+  position: absolute; inset: 0;
+  color: #ff4444;
+  clip-path: polygon(0 58%, 100% 58%, 100% 72%, 0 72%);
+  transform: translateX(-3px);
+  opacity: .5;
+  animation: glitch-bar2 4.2s steps(1) .8s infinite;
+}
+@keyframes glitch-bar {
+  0%, 88%, 100% { clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); transform: translateX(4px); }
+  90% { clip-path: polygon(0 8%,  100% 8%,  100% 30%, 0 30%); transform: translateX(7px); }
+  93% { clip-path: polygon(0 62%, 100% 62%, 100% 80%, 0 80%); transform: translateX(-5px); }
+  96% { clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); transform: translateX(2px); }
+}
+@keyframes glitch-bar2 {
+  0%, 92%, 100% { clip-path: polygon(0 58%, 100% 58%, 100% 72%, 0 72%); transform: translateX(-3px); }
+  94% { clip-path: polygon(0 15%, 100% 15%, 100% 32%, 0 32%); transform: translateX(5px); }
+  97% { clip-path: polygon(0 75%, 100% 75%, 100% 90%, 0 90%); transform: translateX(-6px); }
+}
+
+.intro-msg {
+  font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
+  font-size: clamp(.85rem, 3vw, 1.1rem);
+  color: #e8700a; letter-spacing: .12em; text-transform: uppercase;
+  margin: 0; position: relative; z-index: 2;
+  opacity: 0; animation: intro-text-in .4s ease .7s forwards;
+}
+.intro-skip {
+  font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
+  font-size: .68rem; letter-spacing: .15em; text-transform: uppercase;
+  color: #3d3830; margin: 24px 0 0;
+  position: relative; z-index: 2;
+  opacity: 0; animation: intro-text-in .4s ease 1.6s forwards, intro-blink 1.4s ease 2s infinite;
+}
+@keyframes intro-text-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes intro-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .25; }
+}
