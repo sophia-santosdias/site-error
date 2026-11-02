@@ -88,8 +88,8 @@ a { color: var(--accent); }
 .tools button:hover, .tools select:hover, .btn:hover { border-color: var(--accent); color: var(--accent); }
 .tools select option { background: var(--surface); color: var(--text); }
 .btn { text-decoration: none; display: inline-block; font-family: var(--mono); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
-.btn.primary:hover { filter: brightness(1.1); }
+.btn.primary { background: var(--code); border-color: var(--code); color: #0d0d0d; font-weight: 700; }
+.btn.primary:hover { filter: brightness(1.15); }
 .btn[aria-disabled="true"] { opacity: .3; pointer-events: none; }
 
 .container { max-width: 700px; margin: 0 auto; padding: 36px 20px 64px; outline: none; }
