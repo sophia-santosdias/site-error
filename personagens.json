@@ -29,14 +29,132 @@
           "bio": "sol 🌟 e sal 🌊 | Catarinense perdida em São Paulo",
           "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
           "avatar": "img/personagens/apresentacao/emilia-ferette.png",
-          "seguindo": "2.642",
-          "seguidores": "1.645"
+          "seguindo": "2,642",
+          "seguidores": "1,645"
         },
         "descricao": [
-          "Filha mais velha. Designer de 29 anos, Mili tem paixão pelo mar e pelas ondas, mas atualmente se contenta em estar no seu lugar preferido apenas quando pode ir até o litoral mais próximo.",
-          "Precisou sair de Floripa para São Paulo — e carrega esse peso com ela."
+          "Filha mais velha. Designer de 29 anos, Mili tem paixão pelo mar e pelas ondas, mas atualmente se contenta em estar no seu lugar preferido apenas quando pode ir até o litoral mais próximo desde que precisou sair de Floripa para São Paulo.",
+          "Bissexual e romântica, Emília é a melhor (e única) amiga de Lorena, daquele tipo quase siamesas."
+        ]
+      },
+      {
+        "nome": "Marília Vaz",
+        "apelido": "Mili",
+        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "descricao": [
+          "Viúva de Emílio Ferette, Marília é uma mulher de 52 anos, restauradora de arte.",
+          "Já possuiu uma grande galeria, mas no presente, se dedica à pequenas restaurações, à casa e as duas filhas, principalmente Lorena."
+        ]
+      }
+    ]
+  },
+  {
+    "nucleo": "Núcleo Fragoso",
+    "personagens": [
+      {
+        "nome": "Eduarda Fragoso",
+        "apelido": "Juquinha",
+        "foto": "img/personagens/eduarda-fragoso.png",
+        "twitter": {
+          "handle": "@dudafragoso",
+          "privada": false,
+          "bio": "Fotógrafa 📷",
+          "banner": "img/personagens/apresentacao/lorena-banner.png",
+          "avatar": "img/personagens/apresentacao/lorena-avatar.png",
+          "seguindo": "1,509",
+          "seguidores": "10,1 mil"
+        },
+        "descricao": [
+          "Caçula, Juquinha como é carinhosamente apelidada pelo quase motivo da mãe, tem 28 anos e é fotógrafa.",
+          "Lésbica e romântica, já se meteu em muita confusão graças aos relacionamentos vividos, crente de serem seu 'para sempre'."
+        ]
+      },
+      {
+        "nome": "Alice Fragoso",
+        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "twitter": {
+          "handle": "@bestfragoso",
+          "privada": false,
+          "bio": "Fazendo publicidade engraçadinha",
+          "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
+          "avatar": "img/personagens/apresentacao/emilia-ferette.png",
+          "seguindo": "1,689",
+          "seguidores": "3,154"
+        },
+        "descricao": [
+          "A filha do meio, Alice tem 30 anos, é publicitária, metida a engraçadinha e tá sempre metida nos rolês mais aleatórios do Rio de Janeiro.",
+          "Bissexual assumida, vive sua sexualidade da forma mais livre possível."
+        ]
+      },
+      {
+        "nome": "Paulo Fragoso",
+        "apelido": "Paulinho",
+        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+                "twitter": {
+          "handle": "@littlepaulo",
+          "privada": false,
+          "bio": "Engenheiro (de pesca) 🐟",
+          "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
+          "avatar": "img/personagens/apresentacao/emilia-ferette.png",
+          "seguindo": "1,395",
+          "seguidores": "2,047"
+        },
+        "descricao": [
+          "Primogênito da família Fragoso. Paulinho tem 32 anos, é Engenheiro de Pesca e é o legítimo irmão mais velho, que protege (e irrita) as irmãs.",
+          "É casado com Gerluce, sua namorada de longos anos."
+        ]
+      },
+      {
+        "nome": "Gerluce das Graças",
+        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "twitter": {
+          "handle": "@cheiadegraca",
+          "privada": false,
+          "bio": "vet por amor 🩺",
+          "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
+          "avatar": "img/personagens/apresentacao/emilia-ferette.png",
+          "seguindo": "1,276",
+          "seguidores": "2,194"
+        },
+        "descricao": [
+          "Veterinária de 31 anos, Maria Gerluce das Graças Fragoso, se tornou namorada de Paulinho desde os tempos de universidade, quando precisou pagar uma matéria na turma de engenharia que ele fazia parte.",
+          "Carinhosa, sempre se deu muito bem com todos os membros da família Fragoso, mesmo no início precisando superar os ciúmes da irmã caçula do agora marido."
+        ]
+      },
+      {
+        "nome": "Maggye Damatta",
+        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "twitter": {
+          "handle": "@arrobamaggye",
+          "privada": false,
+          "bio": "Tatuadora | Contato: (21)990779955",
+          "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
+          "avatar": "img/personagens/apresentacao/emilia-ferette.png",
+          "seguindo": "2,634",
+          "seguidores": "15, 6 mil"
+        },
+        "descricao": [
+          "Tatuadora no início de carreira, Maggye tem 27 anos e é amiga de Eduarda desde criança e dos tempos de escola.",
+          "Bissexual, faz sucesso nas noites cariocas, principalmente quando exibe suas tatuagens e descobrem que ela também as faz."
+        ]
+      },
+      {
+        "nome": "Catarina Fragoso",
+        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "descricao": [
+          "Casada com Eduardo, Catarina é uma mulher de 56 anos, Arquiteta e a famosa mãe coruja.",
+          "Apelidada carinhosamente de Juca porque apenas o nome 'José' havia sido escolhido até descobrirem ser uma menina, Catarina é uma mulher engraçada e de referência na área que atua."
+        ]
+      },
+      {
+        "nome": "Eduardo Fragoso",
+        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "descricao": [
+          "Engenheiro Civil, 57 anos, conheceu Catarina em meio às confusões entre Engenheiro/Arquiteta durante uma obra e nunca mais se largaram.",
+          "Assim como a mulher, é um verdadeiro pai coruja, que tá sempre se atualizando com as suas meninas o jeito correto de se referir às coisas, pricipalemente as do meio LGBTQIAPN+."
         ]
       }
     ]
   }
+
 ]
