@@ -56,15 +56,27 @@
         "nome": "Eduarda Fragoso",
         "apelido": "Juquinha",
         "foto": "img/personagens/apresentacao/eduarda-fragoso.jpg",
-        "twitter": {
-          "handle": "@dudafragoso",
-          "privada": false,
-          "bio": "Fotógrafa 📷",
-          "banner": "img/personagens/apresentacao/lorena-banner.png",
-          "avatar": "img/personagens/apresentacao/lorena-avatar.png",
-          "seguindo": "1,509",
-          "seguidores": "10,1 mil"
-        },
+        "twitter": [
+          {
+            "handle": "@dudafragoso",
+            "privada": false,
+            "bio": "Fotógrafa 📷",
+            "banner": "img/personagens/apresentacao/lorena-banner.png",
+            "avatar": "img/personagens/apresentacao/lorena-avatar.png",
+            "seguindo": "1,509",
+            "seguidores": "10,1 mil"
+          },
+            {
+            "handle": "@dudafragoso",
+            "privada": true,
+            "bio": "Fotógrafa 📷",
+            "banner": "img/personagens/apresentacao/lorena-banner.png",
+            "avatar": "img/personagens/apresentacao/lorena-avatar.png",
+            "seguindo": "1,509",
+            "seguidores": "10,1 mil"
+          }
+        ],
+
         "descricao": [
           "Caçula, Juquinha como é carinhosamente apelidada pelo quase motivo da mãe, tem 28 anos e é fotógrafa.",
           "Lésbica e romântica, já se meteu em muita confusão graças aos relacionamentos vividos, crente de serem seu 'para sempre'."

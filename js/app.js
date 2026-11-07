@@ -608,7 +608,7 @@
                 if (tw.avatar) twAvatar.appendChild(el("img", { src: tw.avatar, alt: p.nome, loading: "lazy" }));
                 twHead.appendChild(twAvatar);
                 var twNome = el("div", { "class": "char-tw-nome" });
-                twNome.appendChild(document.createTextNode(p.nome));
+                twNome.appendChild(document.createTextNode(tw.nome_exibicao || p.nome));
                 if (tw.privada) twNome.appendChild(el("span", { "class": "char-tw-lock", "aria-label": "conta privada" }, " 🔒"));
                 twHead.appendChild(twNome);
                 if (tw.handle) twHead.appendChild(el("div", { "class": "char-tw-handle" }, tw.handle));
