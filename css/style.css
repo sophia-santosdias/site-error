@@ -560,6 +560,14 @@ details[open] .author-note-chevron { transform: rotate(180deg); }
   margin-top: 10px; line-height: 1.55;
 }
 
+/* localização */
+.char-tw-loc {
+  display: flex; align-items: center; gap: 4px;
+  color: var(--muted); font-size: .88rem;
+  margin-top: 6px;
+}
+.char-tw-loc-icon { color: var(--muted); font-size: .82rem; line-height: 1; }
+
 /* stats */
 .char-tw-stats {
   display: flex; gap: 20px;

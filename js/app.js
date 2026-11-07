@@ -612,6 +612,12 @@
               twHead.appendChild(twNome);
               if (tw.handle) twHead.appendChild(el("div", { "class": "char-tw-handle" }, tw.handle));
               if (tw.bio) twHead.appendChild(el("div", { "class": "char-tw-bio" }, tw.bio));
+              if (tw.localizacao) {
+                var loc = el("div", { "class": "char-tw-loc" });
+                loc.appendChild(el("span", { "class": "char-tw-loc-icon", "aria-hidden": "true" }, "◎"));
+                loc.appendChild(document.createTextNode(" " + tw.localizacao));
+                twHead.appendChild(loc);
+              }
               perfil.appendChild(twHead);
               var twStats = el("div", { "class": "char-tw-stats" });
               var s1 = el("span"); s1.appendChild(el("b", null, tw.seguindo)); s1.appendChild(document.createTextNode(" Seguindo"));
