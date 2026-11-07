@@ -519,7 +519,7 @@ details[open] .author-note-chevron { transform: rotate(180deg); }
 /* mini-perfil twitter — bloco separado abaixo do card */
 .char-twitter {
   margin-top: 0;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
   border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;

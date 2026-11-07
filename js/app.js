@@ -593,43 +593,47 @@
             card.appendChild(info);
             sec.appendChild(card);
 
-            // perfil do Twitter: bloco separado, largura total, abaixo do card
+            // perfil(s) do Twitter — aceita objeto único ou array
             if (p.twitter) {
-              var tw = p.twitter;
-              var perfil = el("div", { "class": "char-twitter" });
-              if (tw.banner) {
-                var banner = el("div", { "class": "char-tw-banner" });
-                banner.appendChild(el("img", { src: tw.banner, alt: "", loading: "lazy" }));
-                perfil.appendChild(banner);
-              }
-              var twHead = el("div", { "class": "char-tw-head" });
-              var twAvatar = el("div", { "class": "char-tw-avatar" });
-              if (tw.avatar) twAvatar.appendChild(el("img", { src: tw.avatar, alt: p.nome, loading: "lazy" }));
-              twHead.appendChild(twAvatar);
-              var twNome = el("div", { "class": "char-tw-nome" });
-              twNome.appendChild(document.createTextNode(p.nome));
-              if (tw.privada) twNome.appendChild(el("span", { "class": "char-tw-lock", "aria-label": "conta privada" }, " 🔒"));
-              twHead.appendChild(twNome);
-              if (tw.handle) twHead.appendChild(el("div", { "class": "char-tw-handle" }, tw.handle));
-              if (tw.bio) twHead.appendChild(el("div", { "class": "char-tw-bio" }, tw.bio));
-              if (tw.localizacao) {
-                var loc = el("div", { "class": "char-tw-loc" });
-                var pinSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                pinSvg.setAttribute("viewBox", "0 0 24 24"); pinSvg.setAttribute("width", "14"); pinSvg.setAttribute("height", "14");
-                pinSvg.setAttribute("aria-hidden", "true"); pinSvg.setAttribute("class", "char-tw-loc-icon");
-                pinSvg.innerHTML = '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>';
-                loc.appendChild(pinSvg);
-                loc.appendChild(document.createTextNode(" " + tw.localizacao));
-                twHead.appendChild(loc);
-              }
-              perfil.appendChild(twHead);
-              var twStats = el("div", { "class": "char-tw-stats" });
-              var s1 = el("span"); s1.appendChild(el("b", null, tw.seguindo)); s1.appendChild(document.createTextNode(" Seguindo"));
-              var s2 = el("span"); s2.appendChild(el("b", null, tw.seguidores)); s2.appendChild(document.createTextNode(" Seguidores"));
-              twStats.appendChild(s1);
-              twStats.appendChild(s2);
-              perfil.appendChild(twStats);
-              sec.appendChild(perfil);
+              var twList = Array.isArray(p.twitter) ? p.twitter : [p.twitter];
+              twList.forEach(function (tw) {
+                var perfil = el("div", { "class": "char-twitter" });
+                if (tw.banner) {
+                  var banner = el("div", { "class": "char-tw-banner" });
+                  banner.appendChild(el("img", { src: tw.banner, alt: "", loading: "lazy" }));
+                  perfil.appendChild(banner);
+                }
+                var twHead = el("div", { "class": "char-tw-head" });
+                var twAvatar = el("div", { "class": "char-tw-avatar" });
+                if (tw.avatar) twAvatar.appendChild(el("img", { src: tw.avatar, alt: p.nome, loading: "lazy" }));
+                twHead.appendChild(twAvatar);
+                var twNome = el("div", { "class": "char-tw-nome" });
+                twNome.appendChild(document.createTextNode(p.nome));
+                if (tw.privada) twNome.appendChild(el("span", { "class": "char-tw-lock", "aria-label": "conta privada" }, " 🔒"));
+                twHead.appendChild(twNome);
+                if (tw.handle) twHead.appendChild(el("div", { "class": "char-tw-handle" }, tw.handle));
+                if (tw.bio) twHead.appendChild(el("div", { "class": "char-tw-bio" }, tw.bio));
+                if (tw.localizacao) {
+                  var loc = el("div", { "class": "char-tw-loc" });
+                  var pinSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                  pinSvg.setAttribute("viewBox", "0 0 24 24"); pinSvg.setAttribute("width", "14"); pinSvg.setAttribute("height", "14");
+                  pinSvg.setAttribute("aria-hidden", "true"); pinSvg.setAttribute("class", "char-tw-loc-icon");
+                  pinSvg.innerHTML = '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>';
+                  loc.appendChild(pinSvg);
+                  loc.appendChild(document.createTextNode(" " + tw.localizacao));
+                  twHead.appendChild(loc);
+                }
+                perfil.appendChild(twHead);
+                if (tw.seguindo || tw.seguidores) {
+                  var twStats = el("div", { "class": "char-tw-stats" });
+                  var s1 = el("span"); s1.appendChild(el("b", null, tw.seguindo)); s1.appendChild(document.createTextNode(" Seguindo"));
+                  var s2 = el("span"); s2.appendChild(el("b", null, tw.seguidores)); s2.appendChild(document.createTextNode(" Seguidores"));
+                  twStats.appendChild(s1);
+                  twStats.appendChild(s2);
+                  perfil.appendChild(twStats);
+                }
+                sec.appendChild(perfil);
+              });
             }
           });
           box.appendChild(sec);
