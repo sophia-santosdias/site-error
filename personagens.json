@@ -10,6 +10,7 @@
           "privada": true,
           "bio": "Vou usar meu nome, ninguém nunca vai ver mesmo",
           "banner": "img/personagens/apresentacao/lorena-banner.png",
+          "banner_position": "center 40%",
           "avatar": "img/personagens/apresentacao/lorena-avatar.png",
           "seguindo": "0",
           "seguidores": "0"
@@ -29,6 +30,7 @@
           "bio": "sol 🌟 e sal 🌊 | Catarinense perdida em São Paulo",
           "localizacao": "São Paulo",
           "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
+          "banner_position": "center 60%",
           "avatar": "img/personagens/apresentacao/emilia-ferette.png",
           "seguindo": "2,642",
           "seguidores": "1,645"
@@ -58,22 +60,27 @@
         "foto": "img/personagens/apresentacao/eduarda-fragoso.jpg",
         "twitter": [
           {
+            "nome_exibicao": "Eduarda Fragoso",
             "handle": "@dudafragoso",
             "privada": false,
             "bio": "Fotógrafa 📷",
-            "banner": "img/personagens/apresentacao/lorena-banner.png",
-            "avatar": "img/personagens/apresentacao/lorena-avatar.png",
+            "localizacao": "Rio de Janeiro",
+            "banner": "img/personagens/apresentacao/eduarda-fragoso-banner.jpg",
+            "banner_position": "center 10%",
+            "avatar": "img/personagens/apresentacao/eduarda-fragoso-2.jpeg",
             "seguindo": "1,509",
             "seguidores": "10,1 mil"
           },
-            {
-            "handle": "@dudafragoso",
+          {
+            "nome_exibicao": "Juquinha",
+            "handle": "@lesbicapatetica",
             "privada": true,
-            "bio": "Fotógrafa 📷",
-            "banner": "img/personagens/apresentacao/lorena-banner.png",
+            "bio": "Não é a Eduarda",
+            "banner": "img/personagens/apresentacao/eduarda-banner-2.jpg",
+            "banner_position": "center 50%",
             "avatar": "img/personagens/apresentacao/lorena-avatar.png",
-            "seguindo": "1,509",
-            "seguidores": "10,1 mil"
+            "seguindo": "0",
+            "seguidores": "0"
           }
         ],
 
@@ -89,8 +96,9 @@
           "handle": "@bestfragoso",
           "privada": false,
           "bio": "Fazendo publicidade engraçadinha",
+          "localizacao": "Rio de Janeiro",
           "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
-          "avatar": "img/personagens/apresentacao/emilia-ferette.png",
+          "avatar": "img/personagens/apresentacao/alice-fragoso.jpeg",
           "seguindo": "1,689",
           "seguidores": "3,154"
         },
@@ -103,12 +111,13 @@
         "nome": "Paulo Fragoso",
         "apelido": "Paulinho",
         "foto": "img/personagens/apresentacao/paulo-fragoso.jpeg",
-                "twitter": {
+        "twitter": {
           "handle": "@littlepaulo",
           "privada": false,
           "bio": "Engenheiro (de pesca) 🐟",
+          "localizacao": "Rio de Janeiro",
           "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
-          "avatar": "img/personagens/apresentacao/emilia-ferette.png",
+          "avatar": "img/personagens/apresentacao/paulo-fragoso.jpeg",
           "seguindo": "1,395",
           "seguidores": "2,047"
         },
@@ -121,11 +130,13 @@
         "nome": "Gerluce das Graças",
         "foto": "img/personagens/apresentacao/gerluce-das-gracas.jpeg",
         "twitter": {
+          "nome_exibicao": "Luce",
           "handle": "@cheiadegraca",
+          "localizacao": "Rio de Janeiro",
           "privada": false,
           "bio": "vet por amor 🩺",
           "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
-          "avatar": "img/personagens/apresentacao/emilia-ferette.png",
+          "avatar": "img/personagens/apresentacao/gerluce-das-gracas.jpeg",
           "seguindo": "1,276",
           "seguidores": "2,194"
         },
@@ -140,11 +151,14 @@
         "twitter": {
           "handle": "@arrobamaggye",
           "privada": false,
-          "bio": "Tatuadora | Contato: (21)990779955",
+          "bio": "Tatuadora | Contato: (21) 990779955",
+          "localizacao": "Rio de Janeiro",
+          "link": "https://www.maggyemetatua.com",
+          "link_label": "maggyemetatua.com",
           "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
-          "avatar": "img/personagens/apresentacao/emilia-ferette.png",
+          "avatar": "img/personagens/apresentacao/maggye-damatta.jpeg",
           "seguindo": "2,634",
-          "seguidores": "15, 6 mil"
+          "seguidores": "15,6 mil"
         },
         "descricao": [
           "Tatuadora no início de carreira, Maggye tem 27 anos e é amiga de Eduarda desde criança e dos tempos de escola.",

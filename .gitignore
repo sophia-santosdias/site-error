@@ -5,3 +5,4 @@ node_modules/
 Thumbs.db
 
 js/config.local.js
+serve.js

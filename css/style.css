@@ -528,8 +528,8 @@ details[open] .author-note-chevron { transform: rotate(180deg); }
   font-size: 14px;
 }
 /* banner */
-.char-tw-banner { height: 96px; overflow: hidden; background: var(--border); }
-.char-tw-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.char-tw-banner { height: 140px; overflow: hidden; background: var(--border); }
+.char-tw-banner img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; display: block; }
 
 /* área abaixo do banner: avatar + botão */
 .char-tw-head {
@@ -548,11 +548,14 @@ details[open] .author-note-chevron { transform: rotate(180deg); }
 .char-tw-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* nome + handle */
-.char-tw-nome {
-  font-weight: 700; font-size: 1rem; color: var(--text);
+.char-tw-nome-wrap {
+  display: flex; align-items: center; gap: 6px;
   margin-top: 8px; line-height: 1.3;
 }
-.char-tw-lock { color: var(--muted); font-weight: 400; font-size: .85rem; }
+.char-tw-nome {
+  font-weight: 700; font-size: 1rem; color: var(--text);
+}
+.char-tw-lock { fill: var(--muted); flex-shrink: 0; }
 .char-tw-handle { color: var(--muted); font-size: .88rem; margin-top: 2px; }
 
 /* bio */
@@ -561,13 +564,20 @@ details[open] .author-note-chevron { transform: rotate(180deg); }
   margin-top: 10px; line-height: 1.55;
 }
 
-/* localização */
+/* linha de meta (localização + link lado a lado) */
+.char-tw-meta-row {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  margin-top: 6px;
+}
 .char-tw-loc {
   display: flex; align-items: center; gap: 4px;
   color: var(--muted); font-size: .88rem;
-  margin-top: 6px;
 }
 .char-tw-loc-icon { fill: var(--muted); flex-shrink: 0; }
+.char-tw-link {
+  color: #1d9bf0; text-decoration: none; font-size: .88rem;
+}
+.char-tw-link:hover { text-decoration: underline; }
 
 /* stats */
 .char-tw-stats {
@@ -603,9 +613,7 @@ img, svg, video { max-width: 100%; height: auto; }
   /* esconde A+ A- e select no mobile — ficam no menu */
   #font-up, #font-down { display: none; }
   #theme { display: none; }
-
-  /* link Personagens vira ícone de texto curto */
-  .tools .btn[href="#/personagens"] { font-size: 11px; padding: 5px 7px; }
+  .btn[href="#/personagens"] { display: none; }
 
   .container { padding: 20px 14px 64px; }
 
