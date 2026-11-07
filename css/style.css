@@ -552,6 +552,7 @@ details[open] .author-note-chevron { transform: rotate(180deg); }
   font-weight: 700; font-size: 1rem; color: var(--text);
   margin-top: 8px; line-height: 1.3;
 }
+.char-tw-lock { color: var(--muted); font-weight: 400; font-size: .85rem; }
 .char-tw-handle { color: var(--muted); font-size: .88rem; margin-top: 2px; }
 
 /* bio */
