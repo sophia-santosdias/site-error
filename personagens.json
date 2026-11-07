@@ -40,7 +40,7 @@
       {
         "nome": "Marília Vaz",
         "apelido": "Mili",
-        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "foto": "img/personagens/apresentacao/marilia-vaz.jpeg",
         "descricao": [
           "Viúva de Emílio Ferette, Marília é uma mulher de 52 anos, restauradora de arte.",
           "Já possuiu uma grande galeria, mas no presente, se dedica à pequenas restaurações, à casa e as duas filhas, principalmente Lorena."
@@ -54,7 +54,7 @@
       {
         "nome": "Eduarda Fragoso",
         "apelido": "Juquinha",
-        "foto": "img/personagens/eduarda-fragoso.png",
+        "foto": "img/personagens/apresentacao/eduarda-fragoso.jpg",
         "twitter": {
           "handle": "@dudafragoso",
           "privada": false,
@@ -71,7 +71,7 @@
       },
       {
         "nome": "Alice Fragoso",
-        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "foto": "img/personagens/apresentacao/alice-fragoso.jpeg",
         "twitter": {
           "handle": "@bestfragoso",
           "privada": false,
@@ -89,7 +89,7 @@
       {
         "nome": "Paulo Fragoso",
         "apelido": "Paulinho",
-        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "foto": "img/personagens/apresentacao/paulo-fragoso.jpeg",
                 "twitter": {
           "handle": "@littlepaulo",
           "privada": false,
@@ -106,7 +106,7 @@
       },
       {
         "nome": "Gerluce das Graças",
-        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "foto": "img/personagens/apresentacao/gerluce-das-gracas.jpeg",
         "twitter": {
           "handle": "@cheiadegraca",
           "privada": false,
@@ -123,7 +123,7 @@
       },
       {
         "nome": "Maggye Damatta",
-        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "foto": "img/personagens/apresentacao/maggye-damatta.jpeg",
         "twitter": {
           "handle": "@arrobamaggye",
           "privada": false,
@@ -140,7 +140,7 @@
       },
       {
         "nome": "Catarina Fragoso",
-        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "foto": "img/personagens/apresentacao/catarina-fragoso.jpeg",
         "descricao": [
           "Casada com Eduardo, Catarina é uma mulher de 56 anos, Arquiteta e a famosa mãe coruja.",
           "Apelidada carinhosamente de Juca porque apenas o nome 'José' havia sido escolhido até descobrirem ser uma menina, Catarina é uma mulher engraçada e de referência na área que atua."
@@ -148,7 +148,7 @@
       },
       {
         "nome": "Eduardo Fragoso",
-        "foto": "img/personagens/apresentacao/emilia-ferette.png",
+        "foto": "img/personagens/apresentacao/eduardo-fragoso.jpeg",
         "descricao": [
           "Engenheiro Civil, 57 anos, conheceu Catarina em meio às confusões entre Engenheiro/Arquiteta durante uma obra e nunca mais se largaram.",
           "Assim como a mulher, é um verdadeiro pai coruja, que tá sempre se atualizando com as suas meninas o jeito correto de se referir às coisas, pricipalemente as do meio LGBTQIAPN+."
