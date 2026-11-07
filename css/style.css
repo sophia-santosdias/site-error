@@ -465,9 +465,11 @@ details[open] .author-note-chevron { transform: rotate(180deg); }
 .personagens-titulo {
   font-family: var(--mono); font-size: clamp(1.4rem, 5vw, 2rem);
   font-weight: 900; text-transform: uppercase; letter-spacing: .08em;
-  color: var(--accent); margin: 0 0 32px;
+  color: #ffffff;
+  text-shadow: 3px 0 0 var(--accent), -3px 0 0 var(--code);
+  margin: 0 0 32px;
 }
-.personagens-titulo::before { content: "// "; color: var(--muted); font-size: .6em; }
+.personagens-titulo::before { content: "// "; color: var(--muted); font-size: .6em; text-shadow: none; }
 
 .nucleo { margin-bottom: 48px; }
 .nucleo-nome {
