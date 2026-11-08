@@ -594,7 +594,8 @@ details[open] .author-note-chevron { transform: rotate(180deg); }
 
 @media (max-width: 600px) {
   .char-card { grid-template-columns: 1fr; }
-  .char-foto-wrap { height: 220px; }
+  .char-foto-wrap { height: auto; aspect-ratio: 3 / 4; }
+  .char-foto { object-position: center top; }
 }
 
 /* ---------- telas pequenas ---------- */

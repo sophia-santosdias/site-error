@@ -76,9 +76,10 @@
             "handle": "@lesbicapatetica",
             "privada": true,
             "bio": "Não é a Eduarda",
-            "banner": "img/personagens/apresentacao/eduarda-banner-2.jpg",
+            "banner": "img/personagens/apresentacao/eduarda-bannerpriv.jpeg",
             "banner_position": "center 50%",
-            "avatar": "img/personagens/apresentacao/lorena-avatar.png",
+            "banner_fit": "contain",
+            "avatar": "img/personagens/apresentacao/eduarda-iconpriv.jpeg",
             "seguindo": "0",
             "seguidores": "0"
           }
@@ -97,7 +98,8 @@
           "privada": false,
           "bio": "Fazendo publicidade engraçadinha",
           "localizacao": "Rio de Janeiro",
-          "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
+          "banner": "img/personagens/apresentacao/alice-banner.jpeg",
+          "banner_fit": "contain",
           "avatar": "img/personagens/apresentacao/alice-fragoso.jpeg",
           "seguindo": "1,689",
           "seguidores": "3,154"
@@ -116,7 +118,8 @@
           "privada": false,
           "bio": "Engenheiro (de pesca) 🐟",
           "localizacao": "Rio de Janeiro",
-          "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
+          "banner": "img/personagens/apresentacao/paulinho-banner.jpeg",
+          "banner_position": "center 60%",
           "avatar": "img/personagens/apresentacao/paulo-fragoso.jpeg",
           "seguindo": "1,395",
           "seguidores": "2,047"
@@ -135,7 +138,7 @@
           "localizacao": "Rio de Janeiro",
           "privada": false,
           "bio": "vet por amor 🩺",
-          "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
+          "banner": "img/personagens/apresentacao/gerluce-banner.jpeg",
           "avatar": "img/personagens/apresentacao/gerluce-das-gracas.jpeg",
           "seguindo": "1,276",
           "seguidores": "2,194"
@@ -155,7 +158,8 @@
           "localizacao": "Rio de Janeiro",
           "link": "https://www.maggyemetatua.com",
           "link_label": "maggyemetatua.com",
-          "banner": "img/personagens/apresentacao/emilia-ferette-2.png",
+          "banner": "img/personagens/apresentacao/maggye-banner.jpeg",
+          "banner_fit": "contain",
           "avatar": "img/personagens/apresentacao/maggye-damatta.jpeg",
           "seguindo": "2,634",
           "seguidores": "15,6 mil"

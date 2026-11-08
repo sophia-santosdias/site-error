@@ -602,6 +602,7 @@
                   var banner = el("div", { "class": "char-tw-banner" });
                   var bannerImg = el("img", { src: tw.banner, alt: "", loading: "lazy" });
                   if (tw.banner_position) bannerImg.style.objectPosition = tw.banner_position;
+                  if (tw.banner_fit === "contain") bannerImg.style.objectFit = "contain";
                   banner.appendChild(bannerImg);
                   perfil.appendChild(banner);
                 }
