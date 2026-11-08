@@ -598,6 +598,270 @@ details[open] .author-note-chevron { transform: rotate(180deg); }
   .char-foto { object-position: center top; }
 }
 
+/* ---------- grupo whatsapp no núcleo ---------- */
+.wa-group-card {
+  max-width: 440px;
+  margin: 28px auto 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #111a21;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.wa-group-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #1c242b;
+  color: #e9edef;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wa-group-back {
+  display: flex;
+  align-items: center;
+  color: #aebac1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.wa-group-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #374248;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wa-group-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.wa-group-avatar-initial {
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.wa-group-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.wa-group-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #e9edef;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wa-group-members {
+  font-size: 12px;
+  color: #8696a0;
+  line-height: 1.3;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wa-group-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #aebac1;
+}
+
+.wa-group-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: .9;
+  transition: opacity .15s;
+}
+
+.wa-group-action-btn:hover {
+  opacity: 1;
+  color: #fff;
+}
+
+.wa-group-body {
+  position: relative;
+  min-height: 520px;
+  background: #202020;
+  padding: 18px 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* arte de fundo: nuvem + chuva binária */
+.wa-group-bg-art {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.95;
+}
+
+.wa-cloud-svg {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.wa-binary-rain {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+  letter-spacing: 0.35em;
+  color: #727272;
+  text-align: center;
+  white-space: pre;
+}
+
+.wa-group-messages {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* balão enviado (out) */
+.wa-group-bubble.out {
+  align-self: flex-end;
+  background: #dcf8c6;
+  color: #111b21;
+  border-radius: 8px;
+  border-top-right-radius: 2px;
+  padding: 6px 9px 4px 10px;
+  max-width: 82%;
+  min-width: 90px;
+  box-shadow: 0 1px 1.5px rgba(0, 0, 0, 0.2);
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.wa-group-bubble.out .wa-group-msg-text {
+  font-size: 14.5px;
+  line-height: 1.35;
+  color: #111b21;
+  font-weight: 500;
+  padding-right: 18px;
+}
+
+.wa-group-bubble.out .wa-group-msg-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  margin-top: 1px;
+}
+
+.wa-group-msg-time {
+  font-size: 10.5px;
+  color: #667781;
+}
+
+.wa-group-checks {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* linha de mensagem recebida (in) com avatar */
+.wa-group-msg-row.in {
+  align-self: flex-start;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 85%;
+}
+
+.wa-group-sender-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #374248;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.wa-group-sender-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* balão recebido (in) */
+.wa-group-bubble.in {
+  background: #ffffff;
+  color: #111b21;
+  border-radius: 8px;
+  border-top-left-radius: 2px;
+  padding: 5px 9px 4px 10px;
+  box-shadow: 0 1px 1.5px rgba(0, 0, 0, 0.2);
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 80px;
+}
+
+.wa-group-msg-author {
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 2px;
+}
+
+.wa-group-bubble.in .wa-group-msg-text {
+  font-size: 14.5px;
+  line-height: 1.35;
+  color: #111b21;
+  font-weight: 500;
+}
+
+.wa-group-bubble.in .wa-group-msg-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 1px;
+}
+
+@media (max-width: 600px) {
+  .wa-group-card {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 /* ---------- telas pequenas ---------- */
 img, svg, video { max-width: 100%; height: auto; }
 

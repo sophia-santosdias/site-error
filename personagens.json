@@ -49,6 +49,38 @@
           "Já possuiu uma grande galeria, mas no presente, se dedica à pequenas restaurações, à casa e as duas filhas, principalmente Lorena."
         ]
       }
+    ],
+    "grupos": [
+      {
+        "nome": "Manezinhas",
+        "membros": "Irmã, Mãe, Você",
+        "foto": "img/personagens/apresentacao/marilia-vaz.jpeg",
+        "fundo": "img/personagens/apresentacao/wallpaper-ferette.jpeg",
+        "mensagens": [
+          {
+            "tipo": "out",
+            "texto": "Lorena",
+            "hora": "18:09",
+            "status": "lido"
+          },
+          {
+            "tipo": "in",
+            "autor": "Mãe",
+            "autor_cor": "#b842bd",
+            "foto": "img/personagens/apresentacao/marilia-vaz.jpeg",
+            "texto": "Marília",
+            "hora": "18:10"
+          },
+          {
+            "tipo": "in",
+            "autor": "Irmã",
+            "autor_cor": "#8fa31e",
+            "foto": "img/personagens/apresentacao/emilia-ferette.png",
+            "texto": "Emília",
+            "hora": "18:10"
+          }
+        ]
+      }
     ]
   },
   {
@@ -183,6 +215,100 @@
         "descricao": [
           "Engenheiro Civil, 57 anos, conheceu Catarina em meio às confusões entre Engenheiro/Arquiteta durante uma obra e nunca mais se largaram.",
           "Assim como a mulher, é um verdadeiro pai coruja, que tá sempre se atualizando com as suas meninas o jeito correto de se referir às coisas, pricipalemente as do meio LGBTQIAPN+."
+        ]
+      }
+    ],
+    "grupos": [
+      {
+        "nome": "Cadê a Lorena",
+        "membros": "Maninho, Maninha, Cunha, Best, Você",
+        "foto": "img/personagens/apresentacao/catarina-fragoso.jpeg",
+        "fundo": "img/personagens/apresentacao/wallpaper-fragoso.jpeg",
+        "mensagens": [
+          {
+            "tipo": "out",
+            "texto": "Eduarda",
+            "hora": "18:07",
+            "status": "lido"
+          },
+          {
+            "tipo": "in",
+            "autor": "Maninho",
+            "autor_cor": "#b842bd",
+            "foto": "img/personagens/apresentacao/paulo-fragoso.jpeg",
+            "texto": "Paulinho",
+            "hora": "18:10"
+          },
+          {
+            "tipo": "in",
+            "autor": "Maninha",
+            "autor_cor": "#2196f3",
+            "foto": "img/personagens/apresentacao/alice-fragoso.jpeg",
+            "texto": "Alice",
+            "hora": "18:10"
+          },
+          {
+            "tipo": "in",
+            "autor": "Cunha",
+            "autor_cor": "#8fa31e",
+            "foto": "img/personagens/apresentacao/gerluce-das-gracas.jpeg",
+            "texto": "Gerluce",
+            "hora": "18:11"
+          },
+          {
+            "tipo": "in",
+            "autor": "Best",
+            "autor_cor": "#e67e22",
+            "foto": "img/personagens/apresentacao/maggye-damatta.jpeg",
+            "texto": "Maggye",
+            "hora": "18:11"
+          }
+        ]
+      },
+      {
+        "nome": "Bença, Seu Agenor",
+        "membros": "Papaizinho, Mamãe, Maninho, Maninha, Você",
+        "foto": "img/personagens/apresentacao/catarina-fragoso.jpeg",
+        "fundo": "img/personagens/apresentacao/wallpaper-fragoso.jpeg",
+        "mensagens": [
+          {
+            "tipo": "out",
+            "texto": "Eduarda",
+            "hora": "18:07",
+            "status": "lido"
+          },
+          {
+            "tipo": "in",
+            "autor": "Papaizinho",
+            "autor_cor": "#b842bd",
+            "foto": "img/personagens/apresentacao/eduarda-fragoso.jpg",
+            "texto": "Eduardo",
+            "hora": "18:10"
+          },
+          {
+            "tipo": "in",
+            "autor": "Mamãe",
+            "autor_cor": "#8fa31e",
+            "foto": "img/personagens/apresentacao/catarina-fragoso.jpeg",
+            "texto": "Catarina",
+            "hora": "18:11"
+          },
+          {
+            "tipo": "in",
+            "autor": "Maninha",
+            "autor_cor": "#2196f3",
+            "foto": "img/personagens/apresentacao/alice-fragoso.jpeg",
+            "texto": "Alice",
+            "hora": "18:10"
+          },
+          {
+            "tipo": "in",
+            "autor": "Maninho",
+            "autor_cor": "#e67e22",
+            "foto": "img/personagens/apresentacao/paulo-fragoso.jpeg",
+            "texto": "Paulinho",
+            "hora": "18:11"
+          }
         ]
       }
     ]

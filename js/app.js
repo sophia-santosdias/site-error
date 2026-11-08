@@ -100,6 +100,126 @@
     return b;
   }
 
+  // Renderiza grupo do WhatsApp no estilo celular/dark mode
+  function renderWhatsappGrupo(g) {
+    var card = el("div", { "class": "wa-group-card" });
+
+    // Cabeçalho
+    var head = el("div", { "class": "wa-group-head" });
+
+    var back = el("span", { "class": "wa-group-back", "aria-hidden": "true" });
+    back.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>';
+    head.appendChild(back);
+
+    var avatarWrap = el("div", { "class": "wa-group-avatar" });
+    if (g.foto) {
+      avatarWrap.appendChild(el("img", { src: g.foto, alt: g.nome || "Grupo", loading: "lazy" }));
+    } else {
+      avatarWrap.appendChild(el("span", { "class": "wa-group-avatar-initial" }, (g.nome || "?").charAt(0).toUpperCase()));
+    }
+    head.appendChild(avatarWrap);
+
+    var info = el("div", { "class": "wa-group-info" });
+    info.appendChild(el("div", { "class": "wa-group-title" }, g.nome || "Grupo"));
+    if (g.membros || g.subtitulo) {
+      info.appendChild(el("div", { "class": "wa-group-members" }, g.membros || g.subtitulo));
+    }
+    head.appendChild(info);
+
+    var actions = el("div", { "class": "wa-group-actions" });
+    var phone = el("span", { "class": "wa-group-action-btn", "aria-label": "Chamada de voz" });
+    phone.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>';
+    actions.appendChild(phone);
+
+    var video = el("span", { "class": "wa-group-action-btn", "aria-label": "Chamada de vídeo" });
+    video.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>';
+    actions.appendChild(video);
+
+    head.appendChild(actions);
+    card.appendChild(head);
+
+    // Corpo
+    var body = el("div", { "class": "wa-group-body" });
+
+    // Imagem de fundo personalizada ou arte padrão (Nuvem + Chuva Binária)
+    var bgImg = g.fundo || g.wallpaper || g.imagem_fundo;
+    if (bgImg && bgImg !== "nuvem" && bgImg !== "padrao") {
+      body.style.backgroundImage = "url('" + bgImg + "')";
+      body.style.backgroundSize = g.fundo_fit || "cover";
+      body.style.backgroundPosition = g.fundo_posicao || "center";
+      body.style.backgroundRepeat = "no-repeat";
+    } else if (bgImg !== false && bgImg !== "none") {
+      var bgArt = el("div", { "class": "wa-group-bg-art", "aria-hidden": "true" });
+      var cloudSvg = '<svg class="wa-cloud-svg" viewBox="0 0 150 75" width="150" height="75"><path d="M 30 54 A 18 18 0 0 1 20 22 A 28 28 0 0 1 72 10 A 34 34 0 0 1 125 24 A 20 20 0 0 1 116 54 Z" fill="#424242"/></svg>';
+      var binaryRain = '<div class="wa-binary-rain">' +
+        '<div>0 1 0 1 1 0 1 0</div>' +
+        '<div>0 1 0 1 0 1 0 1</div>' +
+        '<div>0 1 0 0 1 1 1 0</div>' +
+        '<div>0 1 0 0 0 0 0 1</div>' +
+        '<div>0 1 0 1 1 0 0 1</div>' +
+        '<div>0 1 0 0 0 1 0 1</div>' +
+        '<div>0 1 0 0 0 1 0 0</div>' +
+        '<div>0 0 0 0 1 0 1 0</div>' +
+        '<div>0 1 0 0 1 0 0 0</div>' +
+        '<div>0 1 0 0 0 0 0 1</div>' +
+        '</div>';
+      bgArt.innerHTML = cloudSvg + binaryRain;
+      body.appendChild(bgArt);
+    }
+
+    // Mensagens
+    var msgsBox = el("div", { "class": "wa-group-messages" });
+    var msgs = g.mensagens || [];
+    msgs.forEach(function (m) {
+      var isOut = m.tipo === "out" || (!m.tipo && !m.autor);
+      if (isOut) {
+        var bubbleOut = el("div", { "class": "wa-group-bubble out" });
+        var txtOut = el("span", { "class": "wa-group-msg-text" });
+        inline(txtOut, m.texto || "");
+        bubbleOut.appendChild(txtOut);
+
+        var metaOut = el("span", { "class": "wa-group-msg-meta" });
+        if (m.hora) metaOut.appendChild(el("span", { "class": "wa-group-msg-time" }, m.hora));
+        var checkSvg = el("span", { "class": "wa-group-checks" });
+        checkSvg.innerHTML = '<svg viewBox="0 0 16 11" width="16" height="11" fill="none"><path d="M11.5 1L5.5 8L2 4.5" stroke="#53bdeb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 1L8.5 8L7 6.5" stroke="#53bdeb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        metaOut.appendChild(checkSvg);
+        bubbleOut.appendChild(metaOut);
+
+        msgsBox.appendChild(bubbleOut);
+      } else {
+        var rowIn = el("div", { "class": "wa-group-msg-row in" });
+        var senderAvatar = el("div", { "class": "wa-group-sender-avatar" });
+        if (m.foto) {
+          senderAvatar.appendChild(el("img", { src: m.foto, alt: m.autor || "", loading: "lazy" }));
+        } else {
+          senderAvatar.appendChild(el("span", null, (m.autor || "?").charAt(0).toUpperCase()));
+        }
+        rowIn.appendChild(senderAvatar);
+
+        var bubbleIn = el("div", { "class": "wa-group-bubble in" });
+        if (m.autor) {
+          var authorEl = el("div", { "class": "wa-group-msg-author" }, m.autor);
+          if (m.autor_cor) authorEl.style.color = m.autor_cor;
+          bubbleIn.appendChild(authorEl);
+        }
+        var txtIn = el("span", { "class": "wa-group-msg-text" });
+        inline(txtIn, m.texto || "");
+        bubbleIn.appendChild(txtIn);
+
+        var metaIn = el("span", { "class": "wa-group-msg-meta" });
+        if (m.hora) metaIn.appendChild(el("span", { "class": "wa-group-msg-time" }, m.hora));
+        bubbleIn.appendChild(metaIn);
+
+        rowIn.appendChild(bubbleIn);
+        msgsBox.appendChild(rowIn);
+      }
+    });
+
+    body.appendChild(msgsBox);
+    card.appendChild(body);
+    return card;
+  }
+
   // ::: tweet Nome | @usuario | 08:42 · 01 jun. 26
   //   :foto https://url.jpg             (opcional — foto de perfil)
   //   texto do post (várias linhas)
@@ -663,6 +783,15 @@
               });
             }
           });
+
+          // Apresentação dos Grupos do Núcleo
+          if (nucleo.grupos || nucleo.grupo) {
+            var gruposList = nucleo.grupos ? (Array.isArray(nucleo.grupos) ? nucleo.grupos : [nucleo.grupos]) : [nucleo.grupo];
+            gruposList.forEach(function (g) {
+              sec.appendChild(renderWhatsappGrupo(g));
+            });
+          }
+
           box.appendChild(sec);
         });
         view.replaceChildren(box);
