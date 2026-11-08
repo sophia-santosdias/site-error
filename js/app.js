@@ -100,6 +100,69 @@
     return b;
   }
 
+  // Cache de personagens e grupos
+  var _personagensCache = null;
+  function loadPersonagensData() {
+    if (_personagensCache) return Promise.resolve(_personagensCache);
+    return fetch("personagens.json" + _bv)
+      .then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); })
+      .then(function (nucleos) {
+        var gruposById = {};
+        var sendersMap = {}; // autor_lower -> { foto, cor }
+
+        var defaultColors = ["#b842bd", "#8fa31e", "#2196f3", "#e67e22", "#e91e63", "#00bcd4", "#9c27b0", "#4caf50"];
+        var colorIdx = 0;
+
+        nucleos.forEach(function (n) {
+          if (n.personagens) {
+            n.personagens.forEach(function (p) {
+              var c = defaultColors[colorIdx % defaultColors.length];
+              colorIdx++;
+              if (p.nome) {
+                var kName = p.nome.toLowerCase();
+                sendersMap[kName] = { foto: p.foto, cor: c };
+                var firstWord = kName.split(/\s+/)[0];
+                if (!sendersMap[firstWord]) sendersMap[firstWord] = { foto: p.foto, cor: c };
+              }
+              if (p.apelido) {
+                var kAp = p.apelido.toLowerCase();
+                if (!sendersMap[kAp]) sendersMap[kAp] = { foto: p.foto, cor: c };
+              }
+            });
+          }
+          var gList = n.grupos ? (Array.isArray(n.grupos) ? n.grupos : [n.grupos]) : (n.grupo ? [n.grupo] : []);
+          gList.forEach(function (g) {
+            if (g.id) gruposById[g.id.toLowerCase()] = g;
+            if (g.nome) gruposById[g.nome.toLowerCase()] = g;
+
+            if (g.mensagens) {
+              g.mensagens.forEach(function (m) {
+                if (m.autor) {
+                  var k = m.autor.toLowerCase();
+                  if (!sendersMap[k] || m.foto || m.autor_cor) {
+                    sendersMap[k] = {
+                      foto: m.foto || (sendersMap[k] ? sendersMap[k].foto : ""),
+                      cor: m.autor_cor || (sendersMap[k] ? sendersMap[k].cor : "#25d366")
+                    };
+                  }
+                }
+              });
+            }
+          });
+        });
+
+        _personagensCache = {
+          nucleos: nucleos,
+          gruposById: gruposById,
+          sendersMap: sendersMap
+        };
+        return _personagensCache;
+      })
+      .catch(function () {
+        return { nucleos: [], gruposById: {}, sendersMap: {} };
+      });
+  }
+
   // Renderiza grupo do WhatsApp no estilo celular/dark mode
   function renderWhatsappGrupo(g) {
     var card = el("div", { "class": "wa-group-card" });
@@ -171,6 +234,11 @@
     var msgsBox = el("div", { "class": "wa-group-messages" });
     var msgs = g.mensagens || [];
     msgs.forEach(function (m) {
+      if (m.tipo === "data" || m.tipo === "divider") {
+        msgsBox.appendChild(el("div", { "class": "wa-date" }, m.texto || m.data));
+        return;
+      }
+
       var isOut = m.tipo === "out" || (!m.tipo && !m.autor);
       if (isOut) {
         var bubbleOut = el("div", { "class": "wa-group-bubble out" });
@@ -220,6 +288,126 @@
     return card;
   }
 
+  // Processa bloco de grupo no capítulo (::: grupo id | nome | foto)
+  function parseChapterWhatsappGrupo(title, lines, pData) {
+    var parts = (title || "").split("|").map(function (s) { return s.trim(); });
+    var idOrName = parts[0] || "";
+    var customName = parts[1] || "";
+    var customPhoto = parts[2] || "";
+
+    var base = null;
+    if (pData && pData.gruposById && idOrName) {
+      base = pData.gruposById[idOrName.toLowerCase()] || null;
+    }
+
+    var grupoObj = {
+      id: base ? base.id : idOrName,
+      nome: customName || (base ? base.nome : idOrName) || "Grupo",
+      foto: customPhoto || (base ? base.foto : ""),
+      membros: base ? (base.membros || base.subtitulo || "") : "",
+      fundo: base ? (base.fundo || base.wallpaper || "") : "",
+      fundo_posicao: base ? base.fundo_posicao : "",
+      fundo_fit: base ? base.fundo_fit : "",
+      mensagens: []
+    };
+
+    var contentLines = [];
+    lines.forEach(function (line) {
+      var lt = line.trim();
+      if (!lt) return;
+      var mNome = lt.match(/^:nome\s+(.+)$/i);
+      var mFoto = lt.match(/^:foto\s+(\S+)$/i);
+      var mMembros = lt.match(/^:(?:membros|subtitulo)\s+(.+)$/i);
+      var mFundo = lt.match(/^:(?:fundo|wallpaper)\s+(\S+)$/i);
+      if (mNome) { grupoObj.nome = mNome[1].trim(); }
+      else if (mFoto) { grupoObj.foto = mFoto[1].trim(); }
+      else if (mMembros) { grupoObj.membros = mMembros[1].trim(); }
+      else if (mFundo) { grupoObj.fundo = mFundo[1].trim(); }
+      else { contentLines.push(line); }
+    });
+
+    if (contentLines.length > 0) {
+      contentLines.forEach(function (line) {
+        line = line.trim();
+        if (!line) return;
+        if (line.charAt(0) === "=") {
+          grupoObj.mensagens.push({ tipo: "data", texto: line.slice(1).trim() });
+          return;
+        }
+
+        var mOut = line.match(/^>\s*(?:Você:?\s*)?(.*)$/i);
+        if (mOut) {
+          var tOut = splitTime(mOut[1]);
+          grupoObj.mensagens.push({
+            tipo: "out",
+            texto: tOut.text,
+            hora: tOut.time,
+            status: "lido"
+          });
+          return;
+        }
+
+        var mIn = line.match(/^<([^>]+)>\s*(.*)$/);
+        if (mIn) {
+          var senderRaw = mIn[1].trim();
+          var tIn = splitTime(mIn[2]);
+
+          var senderName = senderRaw;
+          var senderPhoto = "";
+          var senderColor = "";
+
+          var mSenderFoto = senderRaw.match(/:foto\s+(\S+)/i);
+          var mSenderCor = senderRaw.match(/:cor\s+(#[a-fA-F0-9]{3,8}|\S+)/i);
+          if (mSenderFoto) {
+            senderPhoto = mSenderFoto[1];
+            senderName = senderName.replace(mSenderFoto[0], "");
+          }
+          if (mSenderCor) {
+            senderColor = mSenderCor[1];
+            senderName = senderName.replace(mSenderCor[0], "");
+          }
+          senderName = senderName.trim();
+
+          if (!senderPhoto || !senderColor) {
+            var sKey = senderName.toLowerCase();
+            if (pData && pData.sendersMap && pData.sendersMap[sKey]) {
+              var sInfo = pData.sendersMap[sKey];
+              if (!senderPhoto && sInfo.foto) senderPhoto = sInfo.foto;
+              if (!senderColor && sInfo.cor) senderColor = sInfo.cor;
+            }
+          }
+
+          grupoObj.mensagens.push({
+            tipo: "in",
+            autor: senderName,
+            autor_cor: senderColor || "#25d366",
+            foto: senderPhoto,
+            texto: tIn.text,
+            hora: tIn.time
+          });
+          return;
+        }
+
+        var mInSimple = line.match(/^<\s*(.*)$/);
+        if (mInSimple) {
+          var tSimple = splitTime(mInSimple[1]);
+          grupoObj.mensagens.push({
+            tipo: "in",
+            texto: tSimple.text,
+            hora: tSimple.time
+          });
+          return;
+        }
+
+        grupoObj.mensagens.push({ tipo: "data", texto: line });
+      });
+    } else if (base && base.mensagens) {
+      grupoObj.mensagens = base.mensagens;
+    }
+
+    return renderWhatsappGrupo(grupoObj);
+  }
+
   // ::: tweet Nome | @usuario | 08:42 · 01 jun. 26
   //   :foto https://url.jpg             (opcional — foto de perfil)
   //   texto do post (várias linhas)
@@ -231,8 +419,31 @@
   //   Texto da resposta
   //   + stats
 
-  // Constrói um único card de tweet (sem respostas).
-  function buildTweetCard(title, lines, isReply) {
+  function inlineTweet(parent, text) {
+    text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|@[a-zA-Z0-9_]+|#[a-zA-Z0-9_]+)/).forEach(function (part) {
+      if (!part) return;
+      if (part.indexOf("**") === 0 && part.length > 4) {
+        parent.appendChild(el("strong", null, part.slice(2, -2)));
+      } else if (part.charAt(0) === "*" && part.length > 2) {
+        parent.appendChild(el("em", null, part.slice(1, -1)));
+      } else if (part.charAt(0) === "@" && part.length > 1) {
+        parent.appendChild(el("span", { "class": "tw-mention" }, part));
+      } else if (part.charAt(0) === "#" && part.length > 1) {
+        parent.appendChild(el("span", { "class": "tw-hashtag" }, part));
+      } else {
+        parent.appendChild(document.createTextNode(part));
+      }
+    });
+  }
+
+  function createTwAction(type, svgHtml, label) {
+    var btn = el("span", { "class": "tw-act-btn tw-act-" + type, "aria-label": label });
+    btn.innerHTML = svgHtml;
+    return btn;
+  }
+
+  // Constrói um único card de tweet
+  function buildTweetCard(title, lines, isReply, parentHandle) {
     var parts = title.split("|").map(function (s) { return s.trim(); });
     var name = parts[0] || "Anônimo";
     var handle = parts[1] || "";
@@ -252,63 +463,104 @@
       else { textLines.push(l); }
     });
 
-    var card = el("div", { "class": isReply ? "tw-reply" : "chat tw" });
+    var card = el("div", { "class": isReply ? "tw-card tw-reply" : "tw-card" });
 
-    // coluna esquerda: avatar + fio (se for tweet-pai com respostas, fio é adicionado via CSS)
+    // coluna esquerda: avatar + fio
     var leftCol = el("div", { "class": "tw-left" });
+    var avatarWrap = el("div", { "class": "tw-avatar-wrap" });
     if (photoUrl) {
-      leftCol.appendChild(el("img", { "class": "avatar tw-avatar-img", src: photoUrl, alt: name, loading: "lazy" }));
+      avatarWrap.appendChild(el("img", { "class": "avatar tw-avatar-img", src: photoUrl, alt: name, loading: "lazy" }));
     } else {
-      leftCol.appendChild(el("span", { "class": "avatar" }, name.charAt(0).toUpperCase()));
+      avatarWrap.appendChild(el("span", { "class": "avatar tw-avatar-placeholder" }, name.charAt(0).toUpperCase()));
     }
+    leftCol.appendChild(avatarWrap);
     card.appendChild(leftCol);
 
     var main = el("div", { "class": "tw-main" });
 
-    // cabeçalho
+    // cabeçalho: Nome + Handle + Data + Logo X
     var head = el("div", { "class": "tw-head" });
-    var nameBlock = el("div", { "class": "tw-name-block" });
-    nameBlock.appendChild(el("strong", { "class": "tw-name" }, name));
-    if (handle) nameBlock.appendChild(el("span", { "class": "tw-user" }, handle));
-    head.appendChild(nameBlock);
-    if (!isReply) head.appendChild(el("span", { "class": "tw-x-icon", "aria-hidden": "true" }, "𝕏"));
+    var authorInfo = el("div", { "class": "tw-author-info" });
+    authorInfo.appendChild(el("span", { "class": "tw-name" }, name));
+    if (handle) {
+      authorInfo.appendChild(el("span", { "class": "tw-user" }, handle));
+    }
+    if (datetime) {
+      authorInfo.appendChild(el("span", { "class": "tw-dot" }, "·"));
+      authorInfo.appendChild(el("span", { "class": "tw-date-inline" }, datetime));
+    }
+    head.appendChild(authorInfo);
+
+    if (!isReply) {
+      var xLogo = el("span", { "class": "tw-x-logo", "aria-hidden": "true" });
+      xLogo.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
+      head.appendChild(xLogo);
+    }
     main.appendChild(head);
 
-    // texto
+    // Se for resposta, indica "Em resposta a @handle"
+    if (isReply && parentHandle) {
+      var replyingTo = el("div", { "class": "tw-replying-to" });
+      replyingTo.appendChild(document.createTextNode("Em resposta a "));
+      replyingTo.appendChild(el("span", { "class": "tw-mention" }, parentHandle));
+      main.appendChild(replyingTo);
+    }
+
+    // texto do tweet
+    var textBox = el("div", { "class": "tw-content" });
     textLines.join("\n").split(/\n{2,}/).forEach(function (par) {
       par = par.trim();
       if (!par) return;
       var p = el("p", { "class": "tw-text" });
-      inline(p, par.replace(/\n/g, " "));
-      main.appendChild(p);
+      inlineTweet(p, par.replace(/\n/g, " "));
+      textBox.appendChild(p);
     });
+    main.appendChild(textBox);
 
-    // imagem
+    // mídia / imagem
     if (imgUrl) {
       var imgWrap = el("div", { "class": "tw-img-wrap" });
-      imgWrap.appendChild(el("img", { src: imgUrl, alt: "", loading: "lazy", "class": "tw-img" }));
+      imgWrap.appendChild(el("img", { src: imgUrl, alt: "Imagem do post", loading: "lazy", "class": "tw-img" }));
       main.appendChild(imgWrap);
     }
 
-    // data/hora
-    if (datetime) main.appendChild(el("div", { "class": "tw-meta" }, datetime));
-
     // stats
     if (stats) {
-      var statsEl = el("div", { "class": "tw-stats" }, stats);
+      var statsEl = el("div", { "class": "tw-stats" });
+      var items = stats.split("·").map(function (s) { return s.trim(); });
+      items.forEach(function (item, idx) {
+        if (idx > 0) statsEl.appendChild(el("span", { "class": "tw-stats-dot" }, "·"));
+        var mItem = item.match(/^([\d.,]+(?:mil|k|m|b)?)\s+(.*)$/i);
+        var statSpan = el("span", { "class": "tw-stat-item" });
+        if (mItem) {
+          statSpan.appendChild(el("strong", null, mItem[1]));
+          statSpan.appendChild(document.createTextNode(" " + mItem[2]));
+        } else {
+          statSpan.appendChild(document.createTextNode(item));
+        }
+        statsEl.appendChild(statSpan);
+      });
       main.appendChild(statsEl);
     }
+
+    // barra de ações (Reply, Retweet, Like, Bookmark, Share)
+    var actionsBar = el("div", { "class": "tw-actions" });
+    actionsBar.appendChild(createTwAction("reply", '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>', "Responder"));
+    actionsBar.appendChild(createTwAction("retweet", '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>', "Repostar"));
+    actionsBar.appendChild(createTwAction("like", '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>', "Curtir"));
+    actionsBar.appendChild(createTwAction("bookmark", '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>', "Salvar"));
+    actionsBar.appendChild(createTwAction("share", '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>', "Compartilhar"));
+    main.appendChild(actionsBar);
 
     card.appendChild(main);
     return card;
   }
 
-  // Quebra as linhas em grupos: [{ title, lines }, ...] sendo o primeiro o tweet-pai
-  // e os demais as respostas (delimitadas por :resposta).
+  // Quebra as linhas em grupos: [{ title, lines }, ...]
   function splitTweetGroups(title, lines) {
     var groups = [{ title: title, lines: [] }];
     lines.forEach(function (l) {
-      var m = l.trim().match(/^:resposta\s+(.+)$/i);
+      var m = l.trim().match(/^:(?:resposta|tweet|post)\s+(.+)$/i);
       if (m) { groups.push({ title: m[1].trim(), lines: [] }); }
       else { groups[groups.length - 1].lines.push(l); }
     });
@@ -319,18 +571,18 @@
     var groups = splitTweetGroups(title, lines);
     var hasReplies = groups.length > 1;
 
-    // wrapper só quando há thread
-    if (!hasReplies) return buildTweetCard(title, lines, false);
+    var wrapper = el("div", { "class": "tw-wrapper" + (hasReplies ? " tw-thread" : "") });
+    var rootHandle = (groups[0].title.split("|")[1] || "").trim();
 
-    var thread = el("div", { "class": "tw-thread" });
     groups.forEach(function (g, i) {
       var isReply = i > 0;
-      var card = buildTweetCard(g.title, g.lines, isReply);
-      // marca o tweet-pai com classe especial para desenhar o fio abaixo do avatar
-      if (!isReply) card.classList.add("tw-has-replies");
-      thread.appendChild(card);
+      var hasNext = i < groups.length - 1;
+      var prevHandle = i > 0 ? (groups[i - 1].title.split("|")[1] || rootHandle).trim() : rootHandle;
+      var card = buildTweetCard(g.title, g.lines, isReply, prevHandle);
+      if (hasNext) card.classList.add("tw-has-next");
+      wrapper.appendChild(card);
     });
-    return thread;
+    return wrapper;
   }
 
   var _paraCount = 0;
@@ -406,20 +658,23 @@
     return wrap;
   }
 
-  function renderText(raw, chapterId) {
+  function renderText(raw, chapterId, pData) {
     resetParaCount();
     var box = el("div", { "class": "text" });
     var buf = [];
     var lines = raw.replace(/\r/g, "").split("\n");
     for (var i = 0; i < lines.length; i++) {
-      var m = lines[i].match(/^:::\s*(\w+)\s*(.*)$/);
+      var m = lines[i].match(/^:::\s*([\w-]+)\s*(.*)$/);
       if (!m) { buf.push(lines[i]); continue; }
       var inner = [];
       for (i++; i < lines.length && lines[i].trim() !== ":::"; i++) inner.push(lines[i]);
       renderParagraphs(box, buf, chapterId); buf = [];
       var kind = m[1].toLowerCase(), title = m[2].trim();
-      if (kind === "whatsapp") box.appendChild(wrapWithComment(renderWhatsapp(title, inner), chapterId));
-      else if (kind === "tweet" || kind === "twitter") box.appendChild(wrapWithComment(renderTweet(title, inner), chapterId));
+      if (kind === "grupo" || kind === "whatsapp-grupo" || kind === "wagrupo") {
+        box.appendChild(wrapWithComment(parseChapterWhatsappGrupo(title, inner, pData), chapterId));
+      }
+      else if (kind === "whatsapp") box.appendChild(wrapWithComment(renderWhatsapp(title, inner), chapterId));
+      else if (kind === "tweet" || kind === "twitter" || kind === "thread") box.appendChild(wrapWithComment(renderTweet(title, inner), chapterId));
       else if (kind === "spotify") box.appendChild(renderSpotify(title, inner));
       else if (kind === "nota") {
         var note = renderAuthorNote(inner);
@@ -691,9 +946,9 @@
   // ---------- personagens ----------
   function personagensPage() {
     document.title = "Personagens · " + cfg.title;
-    fetch("personagens.json" + _bv)
-      .then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); })
-      .then(function (nucleos) {
+    loadPersonagensData()
+      .then(function (pData) {
+        var nucleos = pData.nucleos;
         var box = el("section", { "class": "personagens-page" });
         box.appendChild(el("h1", { "class": "personagens-titulo" }, "Personagens"));
         nucleos.forEach(function (nucleo) {
@@ -947,34 +1202,36 @@
     document.title = c.title + " · " + cfg.title;
     store("last", c.id);
 
-    fetch("chapters/" + encodeURIComponent(c.file) + _bv)
-      .then(function (r) { if (!r.ok) throw new Error("http"); return r.text(); })
-      .then(function (raw) {
-        var art = el("article", { "class": "chapter" });
-        art.appendChild(el("h1", null, c.title));
-        var metaEl = el("div", { "class": "meta" });
-        metaEl.appendChild(document.createTextNode("Capítulo " + (idx + 1) + " de " + chapters.length));
-        var viewsEl = el("span", { "class": "meta-views" });
-        metaEl.appendChild(viewsEl);
-        art.appendChild(metaEl);
-        art.appendChild(renderText(raw, c.id));
-        trackView(c.id, viewsEl);
+    loadPersonagensData().then(function (pData) {
+      return fetch("chapters/" + encodeURIComponent(c.file) + _bv)
+        .then(function (r) { if (!r.ok) throw new Error("http"); return r.text(); })
+        .then(function (raw) {
+          var art = el("article", { "class": "chapter" });
+          art.appendChild(el("h1", null, c.title));
+          var metaEl = el("div", { "class": "meta" });
+          metaEl.appendChild(document.createTextNode("Capítulo " + (idx + 1) + " de " + chapters.length));
+          var viewsEl = el("span", { "class": "meta-views" });
+          metaEl.appendChild(viewsEl);
+          art.appendChild(metaEl);
+          art.appendChild(renderText(raw, c.id, pData));
+          trackView(c.id, viewsEl);
 
-        art.appendChild(renderReactions(c));
+          art.appendChild(renderReactions(c));
 
-        var nav = el("nav", { "class": "nav" });
-        nav.appendChild(navLink("← Anterior", chapters[idx - 1]));
-        nav.appendChild(el("a", { "class": "btn", href: "#/" }, "Índice"));
-        nav.appendChild(navLink("Próximo →", chapters[idx + 1]));
-        art.appendChild(nav);
-        art.appendChild(renderComments(c));
+          var nav = el("nav", { "class": "nav" });
+          nav.appendChild(navLink("← Anterior", chapters[idx - 1]));
+          nav.appendChild(el("a", { "class": "btn", href: "#/" }, "Índice"));
+          nav.appendChild(navLink("Próximo →", chapters[idx + 1]));
+          art.appendChild(nav);
+          art.appendChild(renderComments(c));
 
-        view.replaceChildren(art);
-        window.scrollTo(0, 0);
-        view.focus();
-        onScroll();
-      })
-      .catch(function () {
+          view.replaceChildren(art);
+          window.scrollTo(0, 0);
+          view.focus();
+          onScroll();
+        });
+    })
+    .catch(function () {
         view.replaceChildren(el("p", { "class": "notice" }, "Não foi possível carregar este capítulo."));
       });
   }

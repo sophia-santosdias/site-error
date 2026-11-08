@@ -52,6 +52,7 @@
     ],
     "grupos": [
       {
+        "id": "manezinhas",
         "nome": "Manezinhas",
         "membros": "Irmã, Mãe, Você",
         "foto": "img/personagens/apresentacao/marilia-vaz.jpeg",
@@ -220,6 +221,7 @@
     ],
     "grupos": [
       {
+        "id": "cade-a-lorena",
         "nome": "Cadê a Lorena",
         "membros": "Maninho, Maninha, Cunha, Best, Você",
         "foto": "img/personagens/apresentacao/catarina-fragoso.jpeg",
@@ -266,6 +268,7 @@
         ]
       },
       {
+        "id": "benca-seu-agenor",
         "nome": "Bença, Seu Agenor",
         "membros": "Papaizinho, Mamãe, Maninho, Maninha, Você",
         "foto": "img/personagens/apresentacao/catarina-fragoso.jpeg",

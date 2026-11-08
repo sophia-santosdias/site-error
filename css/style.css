@@ -342,52 +342,276 @@ body[data-theme="dark"]       { --wa-bg:#0a0a14; --wa-head:#10101e; --wa-in:#141
 .wa-text { white-space: pre-wrap; }
 .wa-time { display: block; text-align: right; font-size: 10px; opacity: .5; margin-top: 2px; font-family: var(--mono); }
 
-/* tweet simples (sem respostas) */
-.chat.tw {
-  margin: 1.6em auto; max-width: 440px;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 15px; line-height: 1.4;
+/* ---------- tweets (X / Twitter) ---------- */
+.tw-wrapper {
+  margin: 1.8em auto;
+  max-width: 500px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+  transition: border-color .2s, box-shadow .2s;
 }
-.tw {
-  display: flex; gap: 12px; padding: 16px 14px 12px;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+
+.tw-wrapper:hover {
+  border-color: rgba(255, 255, 255, 0.18);
 }
-/* thread de tweets com respostas */
-.tw-thread {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-  overflow: hidden; margin: 1.6em auto; max-width: 440px;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 15px; line-height: 1.4;
+body[data-theme="claro"] .tw-wrapper:hover,
+body[data-theme="acessivel"] .tw-wrapper:hover {
+  border-color: #b0bec5;
 }
-/* tweet-pai dentro de thread */
-.tw-thread .tw { border: none; border-radius: 0; margin: 0; max-width: none; padding-bottom: 0; }
-/* resposta */
+
+.tw-card {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px 10px;
+  position: relative;
+}
+
 .tw-reply {
-  display: flex; gap: 12px; padding: 12px 14px;
-  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
-/* coluna esquerda: avatar + fio */
-.tw-left { display: flex; flex-direction: column; align-items: center; flex: none; width: 40px; }
-/* fio vertical abaixo do avatar no tweet-pai */
+body[data-theme="claro"] .tw-reply,
+body[data-theme="acessivel"] .tw-reply {
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+/* fio conector de thread */
+.tw-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: none;
+  width: 42px;
+  position: relative;
+}
+
+.tw-has-next .tw-left::after,
 .tw-has-replies .tw-left::after {
-  content: ""; flex: 1; width: 2px; background: var(--border);
-  margin-top: 6px; min-height: 12px;
+  content: "";
+  flex: 1;
+  width: 2px;
+  background: var(--border);
+  margin-top: 6px;
+  margin-bottom: -16px;
+  min-height: 24px;
 }
-.tw-avatar-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-.tw-main { min-width: 0; flex: 1; padding-bottom: 4px; }
-.tw-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
-.tw-name-block { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.tw-name { font-size: .95rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 700; }
-.tw-user { color: var(--muted); font-size: .85rem; }
-.tw-x-icon { color: var(--muted); font-size: 1.1rem; flex: none; margin-top: 1px; }
-.tw-text { margin: 6px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; text-align: left; font-size: .97rem; line-height: 1.5; }
-.chapter .text .tw-text { margin: 6px 0 0; }
-.tw-img-wrap { margin-top: 10px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
-.tw-img { display: block; width: 100%; height: auto; max-height: 320px; object-fit: cover; }
-.tw-meta { color: var(--muted); font-size: .82rem; margin-top: 10px; }
-.tw-divider { border: 0; border-top: 1px solid var(--border); margin: 10px 0 8px; }
-.chapter .text .tw-divider::before,
-.tw-divider::before { content: none; display: none; }
-.tw-stats { color: var(--muted); font-size: .82rem; display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-.tw-stats strong { color: var(--text); }
+
+.tw-avatar-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #374248;
+  flex-shrink: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tw-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tw-avatar-placeholder {
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.tw-main {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* cabeçalho */
+.tw-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.3;
+}
+
+.tw-author-info {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  min-width: 0;
+}
+
+.tw-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tw-user {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.tw-dot {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tw-date-inline {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.tw-x-logo {
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: .8;
+}
+
+.tw-replying-to {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 2px 0 4px;
+}
+
+/* texto e destaque */
+.tw-content {
+  margin-top: 4px;
+}
+
+.tw-text {
+  margin: 0 0 6px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  text-align: left;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.chapter .text .tw-text {
+  margin: 0 0 6px;
+}
+
+.tw-mention,
+.tw-hashtag {
+  color: #1d9bf0;
+  font-weight: 500;
+}
+
+/* mídia */
+.tw-img-wrap {
+  margin-top: 10px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #000;
+}
+
+.tw-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 380px;
+  object-fit: cover;
+}
+
+/* estatísticas */
+.tw-stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-top: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.tw-stat-item strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.tw-stats-dot {
+  color: var(--muted);
+  opacity: .7;
+}
+
+/* barra de ações */
+.tw-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  max-width: 400px;
+}
+
+body[data-theme="claro"] .tw-actions,
+body[data-theme="acessivel"] .tw-actions {
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+.tw-act-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all .18s;
+  color: var(--muted);
+}
+
+.tw-act-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tw-act-reply:hover {
+  color: #1d9bf0;
+  background: rgba(29, 155, 240, 0.12);
+}
+
+.tw-act-retweet:hover {
+  color: #00ba7c;
+  background: rgba(0, 186, 124, 0.12);
+}
+
+.tw-act-like:hover {
+  color: #f91880;
+  background: rgba(249, 24, 128, 0.12);
+}
+
+.tw-act-bookmark:hover {
+  color: #1d9bf0;
+  background: rgba(29, 155, 240, 0.12);
+}
+
+.tw-act-share:hover {
+  color: #1d9bf0;
+  background: rgba(29, 155, 240, 0.12);
+}
 
 /* ---------- reações ---------- */
 .reactions-wrap {
