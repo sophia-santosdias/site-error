@@ -442,8 +442,68 @@
     return btn;
   }
 
+  var _readerColors = ["#1d9bf0", "#794bc4", "#e0245e", "#ffad1f", "#00ba7c", "#f45d22", "#17bf63", "#0088cc"];
+  function getReaderAvatarColor(str) {
+    var hash = 0;
+    for (var i = 0; i < (str || "").length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    return _readerColors[Math.abs(hash) % _readerColors.length];
+  }
+
+  // Constrói card de resposta do leitor no formato Twitter/X
+  function buildReaderReplyCard(c) {
+    var rawAuthor = (c.author || "").trim();
+    var name = "Anônimo";
+    var handle = "@leitor";
+
+    if (rawAuthor.indexOf("|") !== -1) {
+      var ap = rawAuthor.split("|").map(function (s) { return s.trim(); });
+      name = ap[0] || "Anônimo";
+      handle = ap[1] || "";
+    } else if (rawAuthor.match(/^(.*?)\s*\((@?[^)]+)\)$/)) {
+      var mParen = rawAuthor.match(/^(.*?)\s*\((@?[^)]+)\)$/);
+      name = mParen[1].trim() || "Anônimo";
+      handle = mParen[2].trim() || "";
+    } else {
+      name = rawAuthor || "Anônimo";
+      var clean = name.toLowerCase().replace(/[^a-z0-9_]/g, "");
+      handle = clean ? "@" + clean : "@leitor";
+    }
+
+    if (handle && handle.charAt(0) !== "@") handle = "@" + handle;
+    if (!handle) handle = "@" + name.toLowerCase().replace(/[^a-z0-9_]/g, "");
+
+    var card = el("div", { "class": "tw-card tw-reply tw-reader-reply" });
+    var left = el("div", { "class": "tw-left" });
+    var av = el("div", { "class": "tw-avatar-wrap tw-avatar-wrap-reader" });
+    av.style.backgroundColor = getReaderAvatarColor(name + handle);
+    var initial = name.charAt(0).toUpperCase();
+    av.appendChild(el("span", { "class": "avatar tw-avatar-placeholder tw-avatar-reader" }, initial));
+    left.appendChild(av);
+    card.appendChild(left);
+
+    var main = el("div", { "class": "tw-main" });
+    var head = el("div", { "class": "tw-head" });
+    var authInfo = el("div", { "class": "tw-author-info" });
+    authInfo.appendChild(el("span", { "class": "tw-name" }, name));
+    authInfo.appendChild(el("span", { "class": "tw-user" }, handle));
+    authInfo.appendChild(el("span", { "class": "tw-dot" }, "·"));
+    var dateStr = c.created_at ? new Date(c.created_at).toLocaleDateString("pt-BR", { day: "numeric", month: "short" }) : "agora";
+    authInfo.appendChild(el("span", { "class": "tw-date-inline" }, dateStr));
+    head.appendChild(authInfo);
+    main.appendChild(head);
+
+    var content = el("div", { "class": "tw-content" });
+    var p = el("p", { "class": "tw-text" });
+    inlineTweet(p, c.body || "");
+    content.appendChild(p);
+    main.appendChild(content);
+
+    card.appendChild(main);
+    return card;
+  }
+
   // Constrói um único card de tweet
-  function buildTweetCard(title, lines, isReply, parentHandle) {
+  function buildTweetCard(title, lines, isReply, parentHandle, replyCountRef) {
     var parts = title.split("|").map(function (s) { return s.trim(); });
     var name = parts[0] || "Anônimo";
     var handle = parts[1] || "";
@@ -460,7 +520,9 @@
       if (mPhoto) { photoUrl = mPhoto[1]; }
       else if (mImg) { imgUrl = mImg[1]; }
       else if (/^\+\s/.test(lt)) { stats = lt.slice(1).trim(); }
-      else { textLines.push(l); }
+      else if (!/^:(?:respostas|comentarios|interativo|comentar)$/i.test(lt)) {
+        textLines.push(l);
+      }
     });
 
     var card = el("div", { "class": isReply ? "tw-card tw-reply" : "tw-card" });
@@ -545,7 +607,13 @@
 
     // barra de ações (Reply, Retweet, Like, Bookmark, Share)
     var actionsBar = el("div", { "class": "tw-actions" });
-    actionsBar.appendChild(createTwAction("reply", '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>', "Responder"));
+    var replyBtn = createTwAction("reply", '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>', "Responder");
+    if (replyCountRef) {
+      var countSpan = el("span", { "class": "tw-reply-count" });
+      replyBtn.appendChild(countSpan);
+      replyCountRef.el = countSpan;
+    }
+    actionsBar.appendChild(replyBtn);
     actionsBar.appendChild(createTwAction("retweet", '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>', "Repostar"));
     actionsBar.appendChild(createTwAction("like", '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>', "Curtir"));
     actionsBar.appendChild(createTwAction("bookmark", '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>', "Salvar"));
@@ -567,21 +635,152 @@
     return groups;
   }
 
-  function renderTweet(title, lines) {
+  function renderTweet(title, lines, chapterId, paraIdx) {
+    var allowInteractive = lines.some(function (l) {
+      return /^:(?:respostas|comentarios|interativo|comentar)$/i.test(l.trim());
+    });
+
     var groups = splitTweetGroups(title, lines);
     var hasReplies = groups.length > 1;
 
-    var wrapper = el("div", { "class": "tw-wrapper" + (hasReplies ? " tw-thread" : "") });
+    var wrapper = el("div", { "class": "tw-wrapper" + (hasReplies ? " tw-thread" : "") + (allowInteractive ? " tw-interactive-thread" : "") });
+    if (allowInteractive) wrapper.dataset.interactive = "true";
+
     var rootHandle = (groups[0].title.split("|")[1] || "").trim();
+    var replyCountRef = allowInteractive ? { el: null } : null;
 
     groups.forEach(function (g, i) {
       var isReply = i > 0;
-      var hasNext = i < groups.length - 1;
+      var hasNext = (i < groups.length - 1) || allowInteractive;
       var prevHandle = i > 0 ? (groups[i - 1].title.split("|")[1] || rootHandle).trim() : rootHandle;
-      var card = buildTweetCard(g.title, g.lines, isReply, prevHandle);
+      var card = buildTweetCard(g.title, g.lines, isReply, prevHandle, i === groups.length - 1 ? replyCountRef : null);
       if (hasNext) card.classList.add("tw-has-next");
       wrapper.appendChild(card);
     });
+
+    // Se o tweet permitir respostas públicas de leitores e comentários estiverem habilitados
+    if (allowInteractive && commentsEnabled() && chapterId != null && paraIdx != null) {
+      var repliesContainer = el("div", { "class": "tw-reader-replies-list" });
+      wrapper.appendChild(repliesContainer);
+
+      var replyBox = el("div", { "class": "tw-interactive-reply-box" });
+      var form = el("form", { "class": "tw-interactive-reply-form", autocomplete: "off" });
+
+      var repHeader = el("div", { "class": "tw-replying-header" });
+      repHeader.appendChild(document.createTextNode("Respondendo a "));
+      repHeader.appendChild(el("span", { "class": "tw-mention" }, rootHandle || "@autor"));
+      form.appendChild(repHeader);
+
+      var inputsRow = el("div", { "class": "tw-reply-inputs-row" });
+      var nameInput = el("input", {
+        type: "text",
+        maxlength: "35",
+        required: "required",
+        placeholder: "Seu nome",
+        "class": "tw-reply-name-input",
+        value: store("author_name") || store("author") || ""
+      });
+      var handleInput = el("input", {
+        type: "text",
+        maxlength: "25",
+        placeholder: "@usuario",
+        "class": "tw-reply-handle-input",
+        value: store("author_handle") || ""
+      });
+      inputsRow.appendChild(nameInput);
+      inputsRow.appendChild(handleInput);
+      form.appendChild(inputsRow);
+
+      var bodyInput = el("textarea", {
+        maxlength: "2000",
+        required: "required",
+        rows: "2",
+        placeholder: "Postar sua resposta...",
+        "class": "tw-reply-body-input"
+      });
+      form.appendChild(bodyInput);
+
+      var footer = el("div", { "class": "tw-reply-footer" });
+      var notice = el("span", { "class": "tw-reply-notice" });
+      var submitBtn = el("button", { type: "submit", "class": "tw-btn-submit" }, "Responder");
+      footer.appendChild(notice);
+      footer.appendChild(submitBtn);
+      form.appendChild(footer);
+
+      replyBox.appendChild(form);
+      wrapper.appendChild(replyBox);
+
+      var replyCount = 0;
+      function updateCount(delta) {
+        replyCount += delta;
+        if (replyCountRef && replyCountRef.el) {
+          replyCountRef.el.textContent = replyCount > 0 ? String(replyCount) : "";
+        }
+      }
+
+      // Carrega as respostas do Supabase
+      api("comments?select=author,body,created_at&chapter_id=eq." +
+          encodeURIComponent(chapterId) +
+          "&paragraph_index=eq." + paraIdx +
+          "&order=created_at.asc&limit=100")
+        .then(function (r) { return r.json(); })
+        .then(function (rows) {
+          replyCount = rows.length;
+          if (replyCountRef && replyCountRef.el && replyCount > 0) {
+            replyCountRef.el.textContent = String(replyCount);
+          }
+          rows.forEach(function (row) {
+            repliesContainer.appendChild(buildReaderReplyCard(row));
+          });
+        })
+        .catch(function () {});
+
+      // Envio de nova resposta
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var nameVal = nameInput.value.trim();
+        var handleVal = handleInput.value.trim();
+        var bodyVal = bodyInput.value.trim();
+        if (!nameVal || !bodyVal) return;
+
+        if (handleVal && handleVal.charAt(0) !== "@") handleVal = "@" + handleVal;
+        if (!handleVal) handleVal = "@" + nameVal.toLowerCase().replace(/[^a-z0-9_]/g, "");
+
+        var authorCombined = nameVal + " | " + handleVal;
+
+        store("author_name", nameVal);
+        store("author_handle", handleVal);
+        store("author", nameVal);
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Postando...";
+        notice.textContent = "";
+
+        api("comments", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
+          body: JSON.stringify({
+            chapter_id: chapterId,
+            paragraph_index: paraIdx,
+            author: authorCombined,
+            body: bodyVal
+          })
+        }).then(function () {
+          var newCard = buildReaderReplyCard({ author: authorCombined, body: bodyVal, created_at: new Date().toISOString() });
+          repliesContainer.appendChild(newCard);
+          bodyInput.value = "";
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Responder";
+          updateCount(1);
+          newCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }).catch(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Responder";
+          notice.textContent = "Erro ao postar. Tente novamente.";
+        });
+      });
+    }
+
     return wrapper;
   }
 
@@ -674,7 +873,19 @@
         box.appendChild(wrapWithComment(parseChapterWhatsappGrupo(title, inner, pData), chapterId));
       }
       else if (kind === "whatsapp") box.appendChild(wrapWithComment(renderWhatsapp(title, inner), chapterId));
-      else if (kind === "tweet" || kind === "twitter" || kind === "thread") box.appendChild(wrapWithComment(renderTweet(title, inner), chapterId));
+      else if (kind === "tweet" || kind === "twitter" || kind === "thread") {
+        var pIdx = _paraCount++;
+        var twNode = renderTweet(title, inner, chapterId, pIdx);
+        var wrap = el("div", { "class": "para-wrap" });
+        if (twNode.dataset.interactive !== "true" && commentsEnabled() && chapterId != null) {
+          var btn = el("button", { type: "button", "class": "para-comment-btn", "aria-label": "Comentar este trecho", "data-idx": String(pIdx) });
+          btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+          btn.addEventListener("click", function () { toggleParaPanel(wrap, chapterId, pIdx); });
+          wrap.appendChild(btn);
+        }
+        wrap.appendChild(twNode);
+        box.appendChild(wrap);
+      }
       else if (kind === "spotify") box.appendChild(renderSpotify(title, inner));
       else if (kind === "nota") {
         var note = renderAuthorNote(inner);

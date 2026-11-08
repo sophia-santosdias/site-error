@@ -42,10 +42,21 @@ Cheguei pro exposed 👀
 #### Comandos suportados dentro do bloco de tweet:
 - **Cabeçalho:** `Nome de Exibição | @handle | Data e Hora`
 - **`:foto caminho/imagem.png`** — Foto de perfil circular do autor.
-- **`:resposta Nome | @handle | Data e Hora`** — Inicia um novo tweet encadeado (thread) conectado pelo fio condutor.
+- **`:respostas`** *(ou `:comentarios`)* — **Ativa respostas públicas de leitores!** Permite que qualquer leitor responda ao tweet diretamente no post. As respostas são salvas no Supabase e aparecem encadeadas no fio como respostas reais do Twitter/X.
+- **`:resposta Nome | @handle | Data e Hora`** — Inicia um novo tweet da história encadeado na thread.
 - **`:img caminho/imagem.png`** — Anexa uma imagem/mídia ao corpo do tweet.
 - **`+ X Visualizações · Y Retweets · Z Curtidas`** — Linha de métricas e estatísticas.
 - **Menções e Hashtags:** `@usuario` e `#hashtag` são detectados e destacados em azul automaticamente.
+
+#### Exemplo de Tweet Interativo Aberto para Respostas de Leitores:
+```text
+::: tweet Eduarda Fragoso | @dudafragoso | 07:30 · 12 mar
+:foto img/personagens/eduarda-fragoso.png
+:respostas
+Tô sentindo um cheirinho, quem mais?
++ 2,648 Visualizações · 2,949 Retweets
+:::
+```
 
 ---
 

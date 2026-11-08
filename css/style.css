@@ -613,6 +613,156 @@ body[data-theme="acessivel"] .tw-actions {
   background: rgba(29, 155, 240, 0.12);
 }
 
+/* ---------- respostas interativas dos leitores no tweet ---------- */
+.tw-reader-replies-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.tw-reader-reply {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.015);
+  transition: background .15s;
+}
+.tw-reader-reply:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+body[data-theme="claro"] .tw-reader-reply,
+body[data-theme="acessivel"] .tw-reader-reply {
+  border-top-color: rgba(0, 0, 0, 0.06);
+  background: rgba(0, 0, 0, 0.01);
+}
+body[data-theme="claro"] .tw-reader-reply:hover,
+body[data-theme="acessivel"] .tw-reader-reply:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.tw-avatar-wrap-reader {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.tw-avatar-reader {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.tw-reply-count {
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.tw-interactive-reply-box {
+  padding: 14px 16px 14px;
+  border-top: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tw-interactive-reply-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tw-replying-header {
+  font-size: 13px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+
+.tw-reply-inputs-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tw-reply-name-input,
+.tw-reply-handle-input {
+  font-family: inherit;
+  font-size: 13.5px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  flex: 1;
+  min-width: 120px;
+  transition: border-color .15s;
+}
+
+.tw-reply-handle-input {
+  color: var(--muted);
+}
+
+.tw-reply-name-input:focus,
+.tw-reply-handle-input:focus,
+.tw-reply-body-input:focus {
+  border-color: #1d9bf0;
+  color: var(--text);
+}
+
+.tw-reply-body-input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 14.5px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  resize: vertical;
+  min-height: 52px;
+  outline: none;
+  line-height: 1.45;
+  transition: border-color .15s;
+}
+
+.tw-reply-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.tw-btn-submit {
+  background: #1d9bf0;
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  padding: 7px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, transform .1s, opacity .15s;
+  box-shadow: 0 2px 8px rgba(29, 155, 240, 0.25);
+}
+
+.tw-btn-submit:hover {
+  background: #1a8cd8;
+  transform: translateY(-1px);
+}
+
+.tw-btn-submit:active {
+  transform: translateY(0);
+}
+
+.tw-btn-submit:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.tw-reply-notice {
+  font-size: 12px;
+  color: var(--accent);
+  margin: 4px 0 0;
+}
+
 /* ---------- reações ---------- */
 .reactions-wrap {
   margin: 2em 0 .5em;
